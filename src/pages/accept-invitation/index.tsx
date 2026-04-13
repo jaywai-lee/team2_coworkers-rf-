@@ -10,7 +10,7 @@ import { teamDashboardPath, ROUTES } from '@/shared/constants/routes';
 import { GlobalLayout } from '@/widgets/layout/GlobalLayout';
 import { FormField } from '@/shared/ui/formfield';
 import { Input } from '@/shared/ui/input/Input';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 
 export default function AcceptInvitationPage() {
   const router = useRouter();
@@ -74,9 +74,11 @@ export default function AcceptInvitationPage() {
         <meta name="description" content="공유받은 팀 링크로 팀에 참여합니다." />
       </Head>
 
-      <div className="flex min-h-full flex-1 items-center justify-center bg-background-secondary p-4 md:p-6">
-        <section className="w-full min-w-0 max-w-[420px] rounded-2xl border border-background-tertiary bg-background-primary p-6 shadow-sm md:p-8">
-          <h1 className="break-words text-xl font-bold tracking-tight text-txt-primary">팀 참여하기</h1>
+      <div className="bg-background-secondary flex min-h-full flex-1 items-center justify-center p-4 md:p-6">
+        <section className="border-background-tertiary bg-background-primary w-full max-w-[420px] min-w-0 rounded-2xl border p-6 shadow-sm md:p-8">
+          <h1 className="text-txt-primary text-xl font-bold tracking-tight break-words">
+            팀 참여하기
+          </h1>
 
           <form
             className="mt-8 flex flex-col gap-6"
@@ -87,7 +89,7 @@ export default function AcceptInvitationPage() {
             noValidate
           >
             <FormField className="gap-2">
-              <FormField.Label className="text-sm font-medium text-txt-secondary">
+              <FormField.Label className="text-txt-secondary text-sm font-medium">
                 팀 링크
               </FormField.Label>
               <FormField.Control>
@@ -98,7 +100,7 @@ export default function AcceptInvitationPage() {
                   placeholder="팀 링크를 입력해주세요."
                   value={teamLink}
                   onChange={(e) => setTeamLink(e.target.value)}
-                  className="rounded-[10px] placeholder:text-md placeholder:font-normal placeholder:text-txt-default"
+                  className="placeholder:text-md placeholder:text-txt-default rounded-[10px] placeholder:font-normal"
                 />
               </FormField.Control>
             </FormField>
@@ -118,7 +120,7 @@ export default function AcceptInvitationPage() {
           </form>
 
           {!isUserPending && !canJoinWithSession ? (
-            <p className="mt-4 break-words text-center text-sm text-txt-secondary">
+            <p className="text-txt-secondary mt-4 text-center text-sm break-words">
               <Link
                 href={{ pathname: ROUTES.LOGIN, query: { redirect: postLoginRedirectPath() } }}
                 className="text-brand-primary font-medium underline underline-offset-2 hover:opacity-90"
@@ -128,7 +130,7 @@ export default function AcceptInvitationPage() {
               후 팀에 참여할 수 있어요.
             </p>
           ) : (
-            <p className="mt-4 break-words text-center text-sm text-txt-secondary">
+            <p className="text-txt-secondary mt-4 text-center text-sm break-words">
               공유받은 팀 링크를 입력해 참여할 수 있어요.
             </p>
           )}

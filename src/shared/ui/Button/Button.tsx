@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { cn } from '../lib/cn';
+import { cn } from '../../lib/cn';
 import { motion, HTMLMotionProps } from 'framer-motion';
 
 export type ButtonVariant = 'primary' | 'danger' | 'outline' | 'ghost' | 'secondary';

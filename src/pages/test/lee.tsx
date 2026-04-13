@@ -1,6 +1,6 @@
 import { CreateTaskBoardModal } from '@/features/task-board/ui/CreateTaskBoardModal';
 import { useModal } from '@/shared/hooks/useModal';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 import { UserProfileModal } from '@/shared/ui/profile/UserProfileModal';
 import { toast } from 'sonner';
 

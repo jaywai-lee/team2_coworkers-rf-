@@ -1,6 +1,6 @@
 import { FormField } from '@/shared/ui/formfield';
 import { Input } from '@/shared/ui/input/Input';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 import { PasswordChangeModal } from './PasswordChangeModal';
 import { AccountDeleteModal } from './AccountDeleteModal';
 import { cn } from '@/shared/lib/cn';

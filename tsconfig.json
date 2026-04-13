@@ -13,7 +13,6 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }
@@ -24,7 +23,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "**/*.mts",
+    "src/widgets/layout/Sidebar/sidebar-icons.ts"
   ],
   "exclude": ["node_modules"]
 }

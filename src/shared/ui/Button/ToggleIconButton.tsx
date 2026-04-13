@@ -1,5 +1,5 @@
-import { cn } from '../lib/cn';
-import { IconArrowDown } from './icons';
+import { cn } from '../../lib/cn';
+import { IconArrowDown } from '../icons';
 
 interface ToggleIconButtonProps extends Omit<React.ComponentProps<'button'>, 'children'> {
   isOpen: boolean;

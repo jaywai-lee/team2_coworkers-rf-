@@ -3,19 +3,14 @@ import Dropdown from '@/shared/ui/dropdown';
 import { SidebarDropdownMenu, SidebarDropdownItem } from './SidebarDropdown';
 import { useSignOut } from '@/features/auth/hooks/useSignOut';
 import { useUserQuery } from '@/features/user/hooks/useUserQuery';
-import { getImageSrc } from '@/shared/lib/getImageSrc';
 import { cn } from '@/shared/lib/cn';
-import { LogoIcon, HamburgerIcon } from './sidebar-icons';
 import { Profile } from '@/shared/ui/profile';
-import userIcon from '@/shared/assets/icons/user.svg';
-
-const defaultProfileImgSrc = getImageSrc(userIcon);
+import { defaultProfileImgSrc } from './constants';
+import { IconHamburger, IconLogo } from '@/shared/ui/icons';
 
 interface MobileHeaderProps {
   onMenuClick: () => void;
-  /** 로그인 여부. false면 오른쪽에 프로필 대신 '로그인' 표시 */
   isLoggedIn?: boolean;
-  /** 로그인 버튼 클릭 시 (isLoggedIn false일 때) */
   onLoginClick?: () => void;
   className?: string;
 }
@@ -45,13 +40,13 @@ export function MobileHeader({
         className="text-txt-default hover:bg-background-tertiary hover:text-txt-primary focus-visible:ring-brand-primary flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
         aria-label="메뉴 열기"
       >
-        <HamburgerIcon className="text-slate-300" />
+        <IconHamburger className="text-slate-300" />
       </button>
       <span
         className="text-brand-primary flex h-8 w-8 shrink-0 items-center justify-center"
         aria-hidden
       >
-        <LogoIcon />
+        <IconLogo />
       </span>
       <div className="min-w-0 flex-1" aria-hidden />
       {isLoggedIn ? (

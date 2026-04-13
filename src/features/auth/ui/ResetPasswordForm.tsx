@@ -2,7 +2,7 @@ import { FormField } from '@/shared/ui/formfield';
 import { useResetPasswordForm } from '../hooks/useResetPasswordForm';
 import { Input } from '@/shared/ui/input/Input';
 import { AUTH_VALIDATION_RULES, validatePasswordMatch } from '../utils/validation';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 
 interface ResetPasswordProps {
   token: string;

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { FormField } from '@/shared/ui/formfield';
 import { Input } from '@/shared/ui/input/Input';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 import { cn } from '@/shared/lib/cn';
 import { useForm } from 'react-hook-form';
 
@@ -32,7 +32,7 @@ export function TeamEditCard({ defaultName, onSubmit, className }: TeamEditCardP
   return (
     <div
       className={cn(
-        'w-full max-w-[460px] rounded-2xl bg-background-primary px-8 py-10 shadow-[0_1px_3px_rgba(15,23,42,0.06)] sm:px-10 sm:py-12',
+        'bg-background-primary w-full max-w-[460px] rounded-2xl px-8 py-10 shadow-[0_1px_3px_rgba(15,23,42,0.06)] sm:px-10 sm:py-12',
         className,
       )}
     >
@@ -46,7 +46,7 @@ export function TeamEditCard({ defaultName, onSubmit, className }: TeamEditCardP
         noValidate
       >
         <FormField isInvalid={!!errors.name} className="gap-2 md:gap-2">
-          <FormField.Label className="text-sm font-medium text-txt-secondary">
+          <FormField.Label className="text-txt-secondary text-sm font-medium">
             팀 이름
           </FormField.Label>
           <FormField.Control>
@@ -57,7 +57,7 @@ export function TeamEditCard({ defaultName, onSubmit, className }: TeamEditCardP
               {...register('name', {
                 required: '팀 이름을 입력해주세요.',
               })}
-              className="rounded-[10px] placeholder:text-txt-default placeholder:text-md placeholder:font-normal"
+              className="placeholder:text-txt-default placeholder:text-md rounded-[10px] placeholder:font-normal"
             />
           </FormField.Control>
           <FormField.Message>{errors.name?.message}</FormField.Message>

@@ -2,20 +2,13 @@ import Link from 'next/link';
 import { memo } from 'react';
 import { cn } from '@/shared/lib/cn';
 import { useSidebarContext } from './SidebarContext';
-import { SR_ONLY, NAV_ITEM_BASE, NAV_ITEM_SELECTED, NAV_ITEM_DEFAULT, NAV_ITEM_ICON_WRAPPER } from './sidebarClasses';
 
 export interface SidebarNavItemProps {
-  /** 메뉴 라벨. 접힌 상태에서는 시각적으로 숨기고 sr-only로 스크린 리더에만 노출 */
   label: string;
-  /** 왼쪽 아이콘 */
   icon?: React.ReactNode;
-  /** 현재 페이지/선택 여부 (강조 스타일, 링크일 때 aria-current="page" 사용) */
   isSelected?: boolean;
-  /** 클릭 핸들러 */
   onClick?: () => void;
-  /** 링크로 쓸 경우 href (onClick 대신 사용) */
   href?: string;
-  /** 펼침 여부. 미제공 시 SidebarContext에서 가져옴 (isExpanded로 통일) */
   isExpanded?: boolean;
   className?: string;
 }
@@ -35,24 +28,37 @@ function SidebarNavItemInner({
 
   const content = (
     <>
-      {icon != null && <span className={NAV_ITEM_ICON_WRAPPER}>{icon}</span>}
+      {icon != null && (
+        <span
+          className={cn(
+            'flex h-5 w-5 shrink-0 items-center justify-center transition-colors duration-200 [&>svg]:h-5 [&>svg]:w-5',
+            isSelected ? 'text-brand-primary' : 'text-slate-300 group-hover:text-inherit',
+          )}
+        >
+          {icon}
+        </span>
+      )}
       {isCollapsed ? (
-        <span className={SR_ONLY}>{label}</span>
+        <span className="sr-only">{label}</span>
       ) : (
         <span className="truncate">{label}</span>
       )}
     </>
   );
 
-  const stateClass = isSelected ? NAV_ITEM_SELECTED : NAV_ITEM_DEFAULT;
+  const itemClass = cn(
+    'group flex items-center gap-2 w-full min-h-[52px] rounded-lg text-left text-base font-medium transition-colors',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2',
+    isCollapsed ? 'mx-auto w-10 justify-center px-0' : 'px-3',
+    isSelected
+      ? 'bg-[var(--color-brand-secondary)] text-brand-primary'
+      : 'text-txt-secondary hover:bg-background-tertiary hover:text-txt-primary',
+    className,
+  );
 
   if (href != null) {
     return (
-      <Link
-        href={href}
-        className={cn(NAV_ITEM_BASE, stateClass, isCollapsed && 'justify-center px-0 w-10 mx-auto', className)}
-        aria-current={isSelected ? 'page' : undefined}
-      >
+      <Link href={href} className={itemClass} aria-current={isSelected ? 'page' : undefined}>
         {content}
       </Link>
     );
@@ -62,7 +68,7 @@ function SidebarNavItemInner({
     <button
       type="button"
       onClick={onClick}
-      className={cn(NAV_ITEM_BASE, stateClass, isCollapsed && 'justify-center px-0 w-10 mx-auto', className)}
+      className={itemClass}
       aria-current={isSelected ? 'true' : undefined}
     >
       {content}

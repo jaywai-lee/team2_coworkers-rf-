@@ -1,6 +1,6 @@
 import { Input } from '@/shared/ui/input/Input';
 import { FormField } from '@/shared/ui/formfield';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 import RecurrenceField from '../../components/recurrenceField';
 import { Controller, useForm } from 'react-hook-form';
 import { TaskFormValues } from './taskForm.types';

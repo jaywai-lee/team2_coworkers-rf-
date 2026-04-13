@@ -1,5 +1,5 @@
 import { useStartNavigation } from '@/features/user/hooks/useStartNavigation';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 
 export const CTAButton = () => {
   const { navigateToStart, isLoading } = useStartNavigation();

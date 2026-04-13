@@ -1,5 +1,5 @@
 import { Modal } from '@/shared/ui/modal';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 import { IconAlert } from '@/shared/ui/icons';
 
 interface UnsavedChangesModalProps {

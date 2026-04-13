@@ -1,4 +1,4 @@
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 import { FormField } from '@/shared/ui/formfield';
 import { IconArrowLeft } from '@/shared/ui/icons/IconArrowLeft';
 import { ImagePreviewList } from '@/shared/ui/imagePicker/ImagePreviewList';
@@ -79,13 +79,13 @@ export function ArticleForm({
       <div className="relative w-full max-w-225 rounded-2xl bg-white shadow-xl">
         <Link
           href="/boards"
-          className="flex items-center gap-1 px-3 md:px-8 pt-6 text-slate-400 hover:text-slate-600"
+          className="flex items-center gap-1 px-3 pt-6 text-slate-400 hover:text-slate-600 md:px-8"
         >
           <IconArrowLeft size={24} />
         </Link>
 
-        <div className=" px-6 pb-6 md:p-5 md:px-18 md:pt-5 md:pb-18">
-          <h2 className="mb-4 pt-3 md:pt-5 text-xl font-bold">
+        <div className="px-6 pb-6 md:p-5 md:px-18 md:pt-5 md:pb-18">
+          <h2 className="mb-4 pt-3 text-xl font-bold md:pt-5">
             {mode === 'edit' ? '게시글 수정' : '게시글 쓰기'}
           </h2>
 

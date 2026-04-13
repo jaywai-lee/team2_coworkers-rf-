@@ -1,4 +1,4 @@
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 import { TaskListItem } from './TaskListItem';
 import { TaskListSidebarItem } from './taskListSidebar.types';
 import { IconPlus } from '@/shared/ui/icons';

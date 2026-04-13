@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { IconPencil, IconUser } from '@/shared/ui/icons';
-import { IconButton } from '@/shared/ui/IconButton';
+import { IconButton } from '@/shared/ui/Button/IconButton';
 import { useImagePicker } from '@/shared/hooks/useImagePicker';
 import { getImageSrc } from '@/shared/lib/getImageSrc';
 import { cn } from '@/shared/lib/cn';
