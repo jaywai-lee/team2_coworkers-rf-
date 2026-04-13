@@ -1,5 +1,5 @@
 import { cn } from '@/shared/lib/cn';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 
 type Props = {
   value: Date;

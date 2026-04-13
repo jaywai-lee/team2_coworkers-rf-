@@ -1,4 +1,4 @@
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 import { IconAlert } from '@/shared/ui/icons';
 
 type Props = {

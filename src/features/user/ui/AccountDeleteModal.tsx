@@ -1,5 +1,5 @@
 import { Modal, useModal } from '@/shared/ui/modal';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 import { IconAlert, IconSecession } from '@/shared/ui/icons';
 import { useDeleteUserMutation } from '../hooks/useDeleteUserMutation';
 

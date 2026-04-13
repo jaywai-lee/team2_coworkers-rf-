@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { Modal, useModal } from '@/shared/ui/modal';
 import { FormField } from '@/shared/ui/formfield';
 import { Input } from '@/shared/ui/input/Input';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 import { AUTH_VALIDATION_RULES } from '@/features/auth/utils/validation';
 import { useUpdatePasswordMutation } from '../hooks/useUpdatePasswordMutation';
 

@@ -7,7 +7,7 @@ export interface SidebarContentProps {
 
 export function SidebarContent({ children, className }: SidebarContentProps) {
   return (
-    <div className={cn('flex-1 overflow-y-auto overflow-x-hidden py-2', className)}>
+    <div className={cn('no-scrollbar flex-1 overflow-x-hidden overflow-y-auto py-2', className)}>
       {children}
     </div>
   );

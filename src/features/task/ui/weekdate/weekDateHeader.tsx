@@ -1,4 +1,4 @@
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 import { IconArrowLeft } from '@/shared/ui/icons/IconArrowLeft';
 import { IconArrowRight } from '@/shared/ui/icons/IconArrowRight';
 import { IconCalendar } from '@/shared/ui/icons/IconCalendar';
@@ -95,7 +95,9 @@ export default function WeekDateHeader({
     <>
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
         <div className="min-w-0">
-          <h2 className="text-txt-primary truncate text-base font-bold md:text-lg lg:text-xl">{groupName}</h2>
+          <h2 className="text-txt-primary truncate text-base font-bold md:text-lg lg:text-xl">
+            {groupName}
+          </h2>
         </div>
         <div className="flex min-w-0 flex-nowrap items-center gap-x-2 sm:gap-3">
           <h2 className="text-txt-primary min-w-[6.5rem] shrink-0 text-sm font-semibold tabular-nums sm:min-w-[7.25rem] md:min-w-[8rem] md:text-base lg:min-w-[8.5rem] lg:text-lg">

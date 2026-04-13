@@ -1,6 +1,6 @@
 import { cn } from '@/shared/lib/cn';
 import { formatDate } from '@/shared/lib/date';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 
 type Props = {
   value?: Date;

@@ -2,7 +2,7 @@ import { TaskListSidebarItem } from './taskListSidebar.types';
 import { TaskListMenu } from './TaskListMenu';
 import { TaskListProgress } from './TaskListProgress';
 import { IconPlus } from '@/shared/ui/icons';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 
 type Props = {
   taskLists: TaskListSidebarItem[];

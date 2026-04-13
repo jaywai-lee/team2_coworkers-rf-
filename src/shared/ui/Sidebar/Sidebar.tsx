@@ -4,11 +4,8 @@ import { useSidebarStore } from '@/shared/store/sidebarStore';
 import { SidebarContext } from './SidebarContext';
 
 export interface SidebarProps {
-  /** 펼침 여부. 미제공 시 전역 sidebarStore 사용 (확장성) */
   isExpanded?: boolean;
-  /** 토글 핸들러. 미제공 시 전역 sidebarStore.toggle 사용 */
   onToggle?: () => void;
-  /** 사이드바 패널 id (접근성 aria-controls 연결). 미제공 시 자동 생성 */
   id?: string;
   collapsedWidth?: number;
   expandedWidth?: number;
@@ -47,11 +44,11 @@ export function Sidebar({
         aria-label="사이드바"
         style={{ width, flexShrink: 0, boxSizing: 'border-box' }}
         className={cn(
-          'flex h-full flex-col bg-background-primary border-r border-background-tertiary transition-[width] duration-200 ease-out motion-reduce:transition-none overflow-hidden',
+          'bg-background-primary border-background-tertiary flex h-full flex-col overflow-hidden border-r transition-[width] duration-200 ease-out motion-reduce:transition-none',
           className,
         )}
       >
-        <div className="min-h-0 flex-1 flex flex-col overflow-hidden">{children}</div>
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
         {footer != null && (
           <div className="shrink-0 border-t border-[var(--color-background-tertiary)]">
             {footer}

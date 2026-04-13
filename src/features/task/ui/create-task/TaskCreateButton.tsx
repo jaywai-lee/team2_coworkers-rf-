@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import TaskCreateModal from './TaskCreateModal';
 import type { TaskCommonParams } from '../../model/params/task.params';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 
 type Props = {
   params: TaskCommonParams;

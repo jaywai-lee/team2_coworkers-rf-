@@ -1,4 +1,4 @@
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 import { Input } from '@/shared/ui/input/Input';
 import { Modal } from '@/shared/ui/modal';
 import { useForm } from 'react-hook-form';

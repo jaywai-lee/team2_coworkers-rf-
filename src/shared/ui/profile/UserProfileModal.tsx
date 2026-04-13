@@ -1,5 +1,5 @@
 import { Modal } from '../modal';
-import { Button } from '../Button';
+import { Button } from '../Button/Button';
 import Image from 'next/image';
 import { useCopyToClipboard } from '@/shared/hooks/useCopyToClipboard';
 

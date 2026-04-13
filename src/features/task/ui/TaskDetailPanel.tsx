@@ -4,7 +4,7 @@ import { TaskCommonParams } from '../model/params/task.params';
 import { useToggleTaskMutation } from '../hooks/useToggleTaskMutation';
 import { IconCalendar } from '@/shared/ui/icons/IconCalendar';
 import { IconRepeat } from '@/shared/ui/icons/IconRepeat';
-import { Button } from '@/shared/ui/Button';
+import { Button } from '@/shared/ui/Button/Button';
 import { IconCheck, IconClose } from '@/shared/ui/icons';
 import { RECURRENCE_LABEL_MAP } from '../model/constants/recurrenceLabel';
 import { TaskDetailComments } from './task-comments/TaskDetailComments';
