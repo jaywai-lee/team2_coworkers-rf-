@@ -1,18 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createArticle } from '../api/createArticle';
 import { toast } from 'sonner';
-import { ARTICLE_QUERY_KEYS } from '../model/querykeys';
 import { useRouter } from 'next/router';
 
 export function useCreateArticle() {
   const queryClient = useQueryClient();
 
-  const { mutate, isPending } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: createArticle,
   });
   const router = useRouter();
-  const createArticleHandler = (title: string, content: string, image?: string) => {
-    mutate(
+  const createArticleHandler = async (title: string, content: string, image?: string) => {
+    return await mutateAsync(
       { title, content, image },
       {
         onSuccess: async () => {

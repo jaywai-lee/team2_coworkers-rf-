@@ -4,6 +4,7 @@ import { IconHeartEmpty } from '@/shared/ui/icons/IconHeartEmpty';
 import { IconBest } from '@/shared/ui/icons/IconBest';
 import Link from 'next/link';
 import { formatDate } from '@/shared/lib/date';
+import Image from 'next/image';
 interface Props {
   article: Article;
   variant?: 'default' | 'best';
@@ -45,13 +46,15 @@ export function ArticleCard({ article, variant }: Props) {
           </p>
         </div>
         {article.image && (
-          <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded bg-gray-100 md:h-22 md:w-22 lg:h-15 lg:w-15">
+          <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded bg-gray-100 md:h-22 md:w-22 lg:h-15 lg:w-15">
             {!isError ? (
-              <img
+              <Image
                 src={article.image}
                 loading="lazy"
                 alt={article.title}
-                className="h-full w-full object-cover"
+                className="object-cover"
+                sizes="(max-width: 768px) 80px, (max-width: 1024px) 88px, 60px"
+                fill
                 onError={() => setIsError(true)}
               />
             ) : (
