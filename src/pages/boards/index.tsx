@@ -1,12 +1,30 @@
-import { ArticleList } from '@/features/boards/components/ArticleList';
 import ArticleListSkeleton from '@/features/boards/components/ArticleListSkeleton';
-import { BestArticleCarousel } from '@/features/boards/components/BestArticleCarousel';
 import BestArticleSkeleton from '@/features/boards/components/BestArticleSkeleton';
 import { BoardHeader } from '@/features/boards/components/BoardHeader';
 import { BoardToolbar } from '@/features/boards/components/BoardToolbar';
 import { useBoardsPage } from '@/features/boards/hooks/useBoardsPage';
 import { GlobalLayout } from '@/widgets/layout/GlobalLayout';
 import { ReactElement } from 'react';
+import dynamic from 'next/dynamic';
+
+const BestArticleCarousel = dynamic(
+  () =>
+    import('@/features/boards/components/BestArticleCarousel').then(
+      (mod) => mod.BestArticleCarousel,
+    ),
+  {
+    loading: () => <BestArticleSkeleton />,
+    ssr: false,
+  },
+);
+
+const ArticleList = dynamic(
+  () => import('@/features/boards/components/ArticleList').then((mod) => mod.ArticleList),
+  {
+    loading: () => <ArticleListSkeleton />,
+    ssr: false,
+  },
+);
 
 export default function BoardsListPage() {
   const {
@@ -24,7 +42,7 @@ export default function BoardsListPage() {
   } = useBoardsPage();
 
   return (
-    <main className="mx-auto mt-6  md:mt-22 max-w-[1120px] px-2 md:px-4 lg:px-0">
+    <main className="mx-auto mt-6 max-w-[1120px] px-2 md:mt-22 md:px-4 lg:px-0">
       <BoardHeader search={search} onChangeSearch={setSearch} />
 
       <section className="mt-8 h-92.5 rounded-xl border border-slate-100 bg-slate-100 px-2 pt-10">
@@ -57,7 +75,7 @@ export default function BoardsListPage() {
           </div>
         ) : (
           <>
-            <ArticleList articles={filteredList}  isFetchingNextPage={isFetchingNextPage} />
+            <ArticleList articles={filteredList} isFetchingNextPage={isFetchingNextPage} />
             <div ref={loadMoreRef} className="h-20" />
           </>
         )}

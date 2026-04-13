@@ -37,9 +37,29 @@ export function BestArticleCarousel({ best, onPrev, onNext, onSwipe }: BestArtic
     setStartX(null);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (startX === null) return;
+    const diff = e.changedTouches[0].clientX - startX;
+
+    if (Math.abs(diff) > THRESHOLD) {
+      onSwipe(diff);
+    }
+    setStartX(null);
+  };
+
   return (
-    <div onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} className="mx-auto select-none">
-      <h2 className="px-4 text-xl font-bold md:px-2 lg:px-6">베스트 게시글</h2>
+    <div
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className="mx-auto px-6 select-none"
+    >
+      <h2 className="px-4 text-xl font-bold md:px-2">베스트 게시글</h2>
       <div className="flex justify-center gap-4 pt-6">
         {best.visibleBest.map((article) => (
           <ArticleCard key={article.id} article={article} variant="best" />

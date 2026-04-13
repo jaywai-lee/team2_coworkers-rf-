@@ -7,17 +7,17 @@ import { useRouter } from 'next/router';
 export function useUpdateArticle() {
   const queryClient = useQueryClient();
 
-  const { mutate, isPending } = useMutation({
+  const { mutateAsync, isPending } = useMutation({
     mutationFn: updateArticle,
   });
   const router = useRouter();
-  const updateArticleHandler = (
+  const updateArticleHandler = async (
     articleId: number,
     title: string,
     content: string,
     image?: string,
   ) => {
-    mutate(
+    return await mutateAsync(
       { articleId, title, content, image },
       {
         onSuccess: async (data) => {

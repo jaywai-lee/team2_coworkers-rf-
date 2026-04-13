@@ -13,7 +13,7 @@ type Props = {
   initialTitle?: string;
   initialContent?: string;
   initialImages?: ImageItem[];
-  onSubmit: (data: { title: string; content: string; images: ImageItem[] }) => void;
+  onSubmit: (data: { title: string; content: string; images: ImageItem[] }) => Promise<void> | void;
   mode?: 'create' | 'edit';
 };
 
@@ -58,17 +58,20 @@ export function ArticleForm({
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const submit = (data: FormValues) => {
-    onSubmit({
-      ...data,
-      images,
-    });
-    reset({
-      title: '',
-      content: '',
-    });
-
-    setImages([]);
+  const submit = async (data: FormValues) => {
+    try {
+      await onSubmit({
+        ...data,
+        images,
+      });
+      reset({
+        title: '',
+        content: '',
+      });
+      setImages([]);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

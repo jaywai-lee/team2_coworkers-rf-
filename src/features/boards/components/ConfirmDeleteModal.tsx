@@ -1,4 +1,4 @@
-
+import { Button } from '@/shared/ui/Button/Button';
 import { Modal } from '@/shared/ui/modal';
 
 type Props = {
@@ -30,26 +30,25 @@ export function ConfirmDeleteModal({
         >
           <Modal.Header className="pb-4">
             <Modal.Title>{title}</Modal.Title>
-            <Modal.Description className="text-sm">
-              {description}
-            </Modal.Description>
+            <Modal.Description className="text-sm">{description}</Modal.Description>
           </Modal.Header>
 
-          <Modal.Footer className="pt-2 flex gap-2">
-            <button
+          <Modal.Footer className="flex gap-2 pt-2">
+            <Button
               type="button"
+              variant="outline"
               onClick={onClose}
-              className="h-12 w-full rounded-xl border border-slate-300 text-sm font-semibold"
+              className="text-txt-secondary hover:text-txt-primary h-12 w-full rounded-xl border border-slate-300 text-sm font-semibold hover:border-slate-500!"
             >
               취소
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="submit"
-              className="h-12 w-full rounded-xl bg-red-500 text-sm font-semibold text-white hover:opacity-90"
+              className="h-12 w-full rounded-xl bg-red-500! text-sm font-semibold text-white hover:opacity-70!"
             >
               {confirmText}
-            </button>
+            </Button>
           </Modal.Footer>
         </form>
       </Modal.Content>
