@@ -1,8 +1,3 @@
-/**
- * 레이아웃(사이드바) 위젯에서만 쓰는 타입.
- * 도메인 타입은 features/{domain}/types 에서 관리.
- */
-
 export interface TeamItem {
   id: string;
   label: string;
@@ -17,7 +12,6 @@ export interface AppSidebarProps {
   onAddTeam?: () => void;
   /** 하단 프로필 영역. 미전달 시 기본 프로필 블록 표시 */
   footer?: React.ReactNode;
-  /** 팀 목록. 미전달 시 constants의 기본 목록 사용 (features/team 데이터는 페이지에서 주입) */
   teams?: TeamItem[];
   /** 로그인 여부. false면 하단에 로그인 유도 UI 표시 (기본 프로필 사용 시만 적용) */
   isLoggedIn?: boolean;
