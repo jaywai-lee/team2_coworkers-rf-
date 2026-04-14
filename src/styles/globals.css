@@ -1,4 +1,8 @@
 @import 'tailwindcss';
+@source '../features';
+@source '../shared';
+@source '../widgets';
+@source '../src';
 
 @theme {
   --font-sans: var(--font-pretendard), ui-sans-serif, system-ui, sans-serif;
@@ -122,5 +126,11 @@
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+}
+
+@layer base {
+  html {
+    overflow-y: scroll;
   }
 }

@@ -37,11 +37,11 @@ export default function DatePopover({ selected, onSelect }: CalendarProps) {
           defaultClassNames.day_button,
           'w-10 h-10 text-sm rounded-md hover:bg-gray-100',
         ),
-        selected: 'text-blue-500 font-semibold bg-transparent hover:bg-transparent',
-        today: 'border border-blue-500',
+        selected: 'text-brand-primary font-semibold bg-transparent hover:bg-transparent',
+        today: 'border border-brand-primary',
         outside: 'text-gray-300',
       }}
-      className="w-full min-w-[320px] rounded-2xl border-2 border-blue-500 bg-white p-6"
+      className="border-brand-primary w-full min-w-[320px] rounded-2xl border-2 bg-white p-6"
       style={
         {
           '--rdp-nav-height': '32px',

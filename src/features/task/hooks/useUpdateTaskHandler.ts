@@ -7,6 +7,8 @@ import { isVaildTaskForm } from '../ui/create-task/taskForm.utils';
 import { toUpdateTaskRecurringPayload } from '../lib/updateTaskRecurringPayload';
 import { toUpdateTaskPayload } from '../lib/updateTaskPayload';
 import { RecurrenceType } from '../model/types/recurrence.type';
+import { useQueryClient } from '@tanstack/react-query';
+import { TASK_QUERY_KEYS } from '../lib/queryKeys';
 
 function isRecurringForm(data: ValidTaskFormValues): data is ValidTaskFormValues & {
   recurrence: Exclude<RecurrenceType, 'ONCE'>;
@@ -17,6 +19,7 @@ function isRecurringForm(data: ValidTaskFormValues): data is ValidTaskFormValues
 export function useUpdateTaskHandler(params: TaskCommonParams, task: Task, onClose: () => void) {
   const updateTaskMutation = useUpdateTaskMutation(params);
   const updateRecurringMutation = useUpdateRecurringMutation(params);
+  const queryClient = useQueryClient();
 
   const isPending = updateTaskMutation.isPending || updateRecurringMutation.isPending;
 
@@ -60,8 +63,9 @@ export function useUpdateTaskHandler(params: TaskCommonParams, task: Task, onClo
         body: payload,
       },
       {
-        onSuccess: (result) => {
-          if (!result.ok) return;
+        onSuccess: async (taskResult) => {
+          if (!taskResult.ok) return;
+          await queryClient.invalidateQueries({ queryKey: TASK_QUERY_KEYS.all });
           onClose();
         },
       },

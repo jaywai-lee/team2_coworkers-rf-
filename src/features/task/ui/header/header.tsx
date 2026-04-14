@@ -26,7 +26,7 @@ export default function Header({ right, className }: Props) {
   return (
     <header
       className={cn(
-        'bg-background-secondary flex w-full items-center justify-between rounded-xl px-4 py-3 md:px-6 md:py-4',
+        'bg-background-primary flex w-full items-center justify-between rounded-xl px-4 py-3 md:px-6 md:py-4',
         className,
       )}
     >
