@@ -12,6 +12,7 @@ import Dropdown from '@/shared/ui/dropdown';
 import { IconKebab } from '@/shared/ui/icons/IconKebab';
 import { Profile } from '@/shared/ui/profile';
 import { cn } from '@/shared/lib/cn';
+import { useEffect, useState } from 'react';
 
 type Props = {
   task: Task | null;
@@ -47,6 +48,15 @@ export default function TaskDetailPanel({
   onDeleteClick,
 }: Props) {
   const { mutate, isPending } = useToggleTaskMutation(params);
+  const [cachedTask, setCachedTask] = useState<Task | null>(task);
+
+  useEffect(() => {
+    if (task) {
+      setCachedTask(task);
+    }
+  }, [task]);
+
+  const displayTask = task || cachedTask;
 
   const handleToggleComplete = () => {
     if (!task || isPending) return;
@@ -72,12 +82,18 @@ export default function TaskDetailPanel({
 
   return (
     <>
-      {task && <div className="fixed inset-0 z-40" onClick={onClose} />}
+      <div
+        className={cn(
+          'fixed inset-0 z-40 transition-opacity duration-300',
+          task ? 'bg-black/20 opacity-100' : 'pointer-events-none opacity-0',
+        )}
+        onClick={onClose}
+      />
 
       <aside
         className={`fixed top-0 right-0 z-50 h-full w-full max-w-full bg-white shadow-[0_15px_50px_-12px_rgba(0,0,0,0.3)] transition-transform duration-300 sm:max-w-md md:max-w-[420px] ${task ? 'translate-x-0' : 'translate-x-full'} `}
       >
-        {task && (
+        {displayTask && (
           <div className="flex h-full flex-col">
             <div className="flex items-center justify-between px-4 py-4 md:px-6 md:py-5">
               <Button
@@ -92,7 +108,7 @@ export default function TaskDetailPanel({
 
             <div className="flex items-center justify-between gap-3 px-4 pt-6 md:px-8 lg:px-10 lg:pt-10">
               <h2 className="min-w-0 flex-1 text-lg font-semibold text-gray-900 md:text-xl">
-                {task.title}
+                {displayTask.title}
               </h2>
               <div className="relative shrink-0" onClick={(e) => e.stopPropagation()}>
                 <Dropdown>
@@ -109,12 +125,12 @@ export default function TaskDetailPanel({
                   >
                     <IconKebab size={20} />
                   </Dropdown.Trigger>
-                  <Dropdown.Menu className="absolute right-0 z-[100] mt-2 w-28">
+                  <Dropdown.Menu className="absolute right-0 z-[100] mt-2 w-28 overflow-hidden">
                     <Dropdown.Item
                       onClick={(e) => {
                         e.stopPropagation();
                         if (isPending) return;
-                        onEditClick(task);
+                        onEditClick(displayTask);
                       }}
                       className="px-3 py-2"
                     >
@@ -124,7 +140,7 @@ export default function TaskDetailPanel({
                       onClick={(e) => {
                         e.stopPropagation();
                         if (isPending) return;
-                        onDeleteClick(task);
+                        onDeleteClick(displayTask);
                       }}
                       className="px-3 py-2"
                     >
@@ -138,11 +154,13 @@ export default function TaskDetailPanel({
             <div className="mt-4 flex items-center gap-3 px-4 pb-4 md:px-7">
               <Profile
                 size="md"
-                imageSrc={task.writer?.imageUrl}
+                imageSrc={displayTask.writer?.imageUrl}
                 decorative
-                alt={`${task.writer?.nickname ?? '작성자'} 프로필`}
+                alt={`${displayTask.writer?.nickname ?? '작성자'} 프로필`}
               />
-              <span className="text-sm text-gray-700">{task.writer?.nickname ?? '작성자'}</span>
+              <span className="text-sm text-gray-700">
+                {displayTask.writer?.nickname ?? '작성자'}
+              </span>
             </div>
 
             <div className="flex flex-col gap-4 px-4 md:flex-row md:items-start md:justify-between md:gap-3 md:px-6">
@@ -150,13 +168,13 @@ export default function TaskDetailPanel({
                 <div className="flex flex-wrap gap-4 md:gap-6">
                   <MetaItem icon={<IconCalendar size={16} />}>시작 날짜</MetaItem>
                   <p className="font-weight-regular text-txt-primary text-sm">
-                    {formatDateTime(task.date)}
+                    {formatDateTime(displayTask.date)}
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-4 md:gap-6">
                   <MetaItem icon={<IconRepeat />}>반복 설정</MetaItem>
                   <p className="font-weight-regular text-txt-primary text-sm">
-                    {RECURRENCE_LABEL_MAP[task.recurrence]}
+                    {RECURRENCE_LABEL_MAP[displayTask.recurrence]}
                   </p>
                 </div>
               </div>
@@ -171,7 +189,7 @@ export default function TaskDetailPanel({
                   handleToggleComplete();
                 }}
               >
-                {task.isCompleted ? '완료 취소' : '완료하기'}
+                {displayTask.isCompleted ? '완료 취소' : '완료하기'}
               </Button>
             </div>
 
@@ -179,11 +197,11 @@ export default function TaskDetailPanel({
 
             <div className="flex-1 overflow-y-auto px-4 py-4 md:px-6 md:py-5">
               <p className="font-weight-regular text-txt-primary text-sm leading-relaxed">
-                {task.description}
+                {displayTask.description}
               </p>
 
               <TaskDetailComments
-                task={task}
+                task={displayTask}
                 params={params}
                 listDateIso={listDateIso}
                 onTaskChange={onTaskChange}

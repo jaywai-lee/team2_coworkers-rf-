@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Task } from '../model/entities/task.model';
 
 export function useTaskModal() {
@@ -6,18 +6,26 @@ export function useTaskModal() {
   const [editTask, setEditTask] = useState<Task | null>(null);
   const [deleteTask, setDeleteTask] = useState<Task | null>(null);
 
+  const openDetail = useCallback((task: Task) => setDetailTask(task), []);
+  const openEdit = useCallback((task: Task) => setEditTask(task), []);
+  const openDelete = useCallback((task: Task) => setDeleteTask(task), []);
+
+  const closeDetail = useCallback(() => setDetailTask(null), []);
+  const closeEdit = useCallback(() => setEditTask(null), []);
+  const closeDelete = useCallback(() => setDeleteTask(null), []);
+
   return {
     detailTask,
     setDetailTask,
     editTask,
     deleteTask,
 
-    openDetail: (task: Task) => setDetailTask(task),
-    openEdit: (task: Task) => setEditTask(task),
-    openDelete: (task: Task) => setDeleteTask(task),
+    openDetail,
+    openEdit,
+    openDelete,
 
-    closeDetail: () => setDetailTask(null),
-    closeEdit: () => setEditTask(null),
-    closeDelete: () => setDeleteTask(null),
+    closeDetail,
+    closeEdit,
+    closeDelete,
   };
 }

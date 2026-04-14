@@ -2,10 +2,15 @@ import { Button } from '@/shared/ui/Button/Button';
 import { IconArrowLeft } from '@/shared/ui/icons/IconArrowLeft';
 import { IconArrowRight } from '@/shared/ui/icons/IconArrowRight';
 import { IconCalendar } from '@/shared/ui/icons/IconCalendar';
-import Calendar from '../../dateTimeField/datePopover';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import useClickOutside from '@/shared/hooks/useClickOutside';
+import dynamic from 'next/dynamic';
+
+const Calendar = dynamic(() => import('../../dateTimeField/datePopover'), {
+  ssr: false,
+  loading: () => <div className="p-4 text-center text-sm text-gray-500">달력 불러오는 중...</div>,
+});
 
 type Props = {
   value: Date;
@@ -106,7 +111,7 @@ export default function WeekDateHeader({
 
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             <Button
-              className="bg-primary h-4 w-4 rounded-full border border-gray-300 p-0"
+              className="h-4 w-4 rounded-full border border-gray-300 p-0"
               variant="ghost"
               onClick={onPrev}
               aria-label="이전 달"
@@ -115,7 +120,7 @@ export default function WeekDateHeader({
             </Button>
 
             <Button
-              className="bg-primary h-4 w-4 rounded-full border border-gray-300 p-0"
+              className="h-4 w-4 rounded-full border border-gray-300 p-0"
               variant="ghost"
               onClick={onNext}
               aria-label="다음 달"

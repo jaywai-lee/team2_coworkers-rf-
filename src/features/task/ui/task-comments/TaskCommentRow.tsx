@@ -1,5 +1,5 @@
 import { formatDistanceToNow } from 'date-fns';
-import { ko } from 'date-fns/locale';
+import { ko } from 'date-fns/locale/ko';
 import { Button } from '@/shared/ui/Button/Button';
 import Dropdown from '@/shared/ui/dropdown';
 import { IconKebab } from '@/shared/ui/icons/IconKebab';

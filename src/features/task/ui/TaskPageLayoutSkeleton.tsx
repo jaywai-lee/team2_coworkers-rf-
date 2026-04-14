@@ -63,11 +63,11 @@ function WeekCalendarBlockSkeleton() {
 
 export function TasksSectionLoadingSkeleton() {
   return (
-    <div className="mx-auto flex w-full max-w-full flex-col gap-2 md:max-w-[640px] lg:max-w-[734px]">
+    <div className="mx-auto flex w-full flex-col gap-2 md:max-w-[640px] lg:max-w-[734px]">
       <Skeleton className="h-7 w-44 md:h-8" />
-      <Skeleton className="h-11 w-full rounded-xl md:h-12" />
+      <Skeleton className="h-10 w-full rounded-xl" />
       {[0, 1, 2].map((i) => (
-        <Skeleton key={i} className="h-[72px] w-full rounded-xl md:h-[76px]" />
+        <Skeleton key={i} className="h-[68px] w-full rounded-xl" />
       ))}
     </div>
   );

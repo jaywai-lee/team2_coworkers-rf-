@@ -9,6 +9,7 @@ import { useToggleTaskMutation } from '../hooks/useToggleTaskMutation';
 import { TaskCommonParams } from '../model/params/task.params';
 import Dropdown from '@/shared/ui/dropdown';
 import { RECURRENCE_LABEL_MAP } from '../model/constants/recurrenceLabel';
+import { memo } from 'react';
 
 type Props = {
   task: Task;
@@ -33,7 +34,7 @@ function MetaItem({ icon, children }: MetaItemProps) {
   );
 }
 
-export default function TaskItem({ task, onClick, params, onDeleteClick, onEditClick }: Props) {
+function TaskItem({ task, onClick, params, onDeleteClick, onEditClick }: Props) {
   const { mutate } = useToggleTaskMutation(params);
   const checkboxId = `task-${task.id}`;
 
@@ -53,10 +54,15 @@ export default function TaskItem({ task, onClick, params, onDeleteClick, onEditC
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <div className="flex min-w-0 items-center gap-2">
           <div onClick={(e) => e.stopPropagation()} className="shrink-0">
-            <Checkbox id={checkboxId} size="lg" checked={task.isCompleted} onChange={handleToggle} />
+            <Checkbox
+              id={checkboxId}
+              size="lg"
+              checked={task.isCompleted}
+              onChange={handleToggle}
+            />
           </div>
           <div className="flex min-w-0 flex-1 overflow-hidden">
-            <div className="inline-flex min-w-0 max-w-full items-center gap-1.5">
+            <div className="inline-flex max-w-full min-w-0 items-center gap-1.5">
               <label
                 htmlFor={checkboxId}
                 onClick={(e) => e.stopPropagation()}
@@ -85,7 +91,7 @@ export default function TaskItem({ task, onClick, params, onDeleteClick, onEditC
         >
           <IconKebab size={20} />
         </Dropdown.Trigger>
-        <Dropdown.Menu className="absolute right-0 z-50 mt-2 w-28">
+        <Dropdown.Menu className="absolute right-0 z-50 mt-2 w-28 overflow-hidden">
           <Dropdown.Item
             onClick={(e) => {
               e.stopPropagation();
@@ -109,3 +115,5 @@ export default function TaskItem({ task, onClick, params, onDeleteClick, onEditC
     </li>
   );
 }
+
+export default memo(TaskItem);

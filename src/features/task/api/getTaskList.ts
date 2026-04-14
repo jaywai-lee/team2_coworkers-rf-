@@ -1,4 +1,4 @@
-import { toTaskList, toTaskListFromArray } from '../lib/mappers/task.mapper';
+import { toTaskListFromArray } from '../lib/mappers/task.mapper';
 import type { TaskList } from '../model/entities/task.model';
 import type { TaskDto } from '../model/dto/task.dto';
 import type { GetTaskListQuery } from '../model/dto/task.query';

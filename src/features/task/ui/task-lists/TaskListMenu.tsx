@@ -16,9 +16,11 @@ export function TaskListMenu({ onEdit, onDelete }: Props) {
       >
         <IconKebab size={20} />
       </Dropdown.Trigger>
-      <Dropdown.Menu className="w-28">
-        <Dropdown.Item onClick={onEdit}>수정하기</Dropdown.Item>
-        <Dropdown.Item onClick={onDelete}>삭제하기</Dropdown.Item>
+      <Dropdown.Menu className="w-30">
+        <div className="flex w-full flex-col overflow-hidden rounded-xl bg-white shadow-md">
+          <Dropdown.Item onClick={onEdit}>수정하기</Dropdown.Item>
+          <Dropdown.Item onClick={onDelete}>삭제하기</Dropdown.Item>
+        </div>
       </Dropdown.Menu>
     </Dropdown>
   );

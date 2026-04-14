@@ -36,8 +36,26 @@ function isFiniteNumber(value: number | undefined): value is number {
   return typeof value === 'number' && Number.isFinite(value);
 }
 
-export function TaskPageLayout({ groupId, taskList }: Props) {
+function TaskContentArea({
+  groupId,
+  currentIdNum,
+  selectedListTitle,
+}: {
+  groupId: number;
+  currentIdNum: number;
+  selectedListTitle: string;
+}) {
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  return (
+    <div className="flex min-w-0 flex-1 flex-col gap-4 md:gap-5 lg:gap-6">
+      <WeekCalendar value={selectedDate} onChange={setSelectedDate} groupName={selectedListTitle} />
+      <TasksSection groupId={groupId} taskListId={currentIdNum} date={selectedDate} />
+    </div>
+  );
+}
+
+export function TaskPageLayout({ groupId, taskList }: Props) {
   const router = useRouter();
   const { data: group, isPending: isGroupPending } = useGroupQuery(groupId, {
     enabled: router.isReady,
@@ -90,8 +108,8 @@ export function TaskPageLayout({ groupId, taskList }: Props) {
     : selectedListFromDetail;
 
   return (
-    <>
-      <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-3 px-4 py-4 md:gap-5 md:px-6 md:py-5 lg:gap-6 lg:px-8 lg:py-6 xl:max-w-[1200px] xl:px-10">
+    <div className="bg-background-secondary min-h-screen w-full">
+      <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-3 px-4 py-4 md:gap-5 md:px-6 md:py-15 lg:gap-6 lg:px-8 lg:py-[120px] xl:max-w-[1120px] xl:px-10">
         <Header />
         <div className="flex w-full flex-col gap-4 md:gap-5 lg:flex-row lg:gap-8">
           {showTaskListSkeleton ? (
@@ -124,15 +142,11 @@ export function TaskPageLayout({ groupId, taskList }: Props) {
               </div>
             </>
           )}
-          <div className="flex min-w-0 flex-1 flex-col gap-4 md:gap-5 lg:gap-6">
-            <WeekCalendar
-              value={selectedDate}
-              onChange={setSelectedDate}
-              groupName={selectedList?.title ?? ''}
-            />
-
-            <TasksSection groupId={groupId} taskListId={currentIdNum} date={selectedDate} />
-          </div>
+          <TaskContentArea
+            groupId={groupId}
+            currentIdNum={currentIdNum}
+            selectedListTitle={selectedList?.title ?? ''}
+          />
         </div>
       </div>
 
@@ -155,6 +169,6 @@ export function TaskPageLayout({ groupId, taskList }: Props) {
         onClose={taskListActions.closeDeleteModal}
         onConfirmDelete={taskListActions.handleConfirmDelete}
       />
-    </>
+    </div>
   );
 }

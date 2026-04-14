@@ -8,6 +8,7 @@ import type { TaskList } from '../model/entities/task.model';
 import { useCreateTaskListMutation } from './useCreateTaskListMutation';
 import { useUpdateTaskListMutation } from './useUpdateTaskListMutation';
 import { useDeleteTaskListMutation } from './useDeleteTaskListMutation';
+import { TASK_QUERY_KEYS } from '../lib/queryKeys';
 
 type Params = {
   groupId: number;
@@ -65,6 +66,7 @@ export function useTaskListActions({
       };
     });
 
+    queryClient.invalidateQueries({ queryKey: GROUP_QUERY_KEYS.detail(groupId) });
     toast.success('할 일 목록을 만들었습니다.');
   };
 
@@ -92,10 +94,15 @@ export function useTaskListActions({
       return {
         ...prev,
         taskLists: prev.taskLists.map((item) =>
-          Number(item.id) === Number(editing.taskListId) ? toTaskList(result.data) : item,
+          Number(item.id) === Number(editing.taskListId) ? { ...item, title: trimmed } : item,
         ),
       };
     });
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: GROUP_QUERY_KEYS.detail(groupId) }),
+      queryClient.invalidateQueries({ queryKey: ['taskListDetail', groupId, editing.taskListId] }),
+      queryClient.invalidateQueries({ queryKey: TASK_QUERY_KEYS.all }),
+    ]);
 
     toast.success('할 일 목록을 수정했습니다.');
     setEditing(null);
@@ -119,6 +126,8 @@ export function useTaskListActions({
       return { ...prev, taskLists: filtered };
     });
 
+    queryClient.invalidateQueries({ queryKey: GROUP_QUERY_KEYS.detail(groupId) });
+    queryClient.invalidateQueries({ queryKey: ['taskListDetail', groupId, deletingId] });
     toast.success('할 일 목록을 삭제했습니다.');
     setDeletingId(null);
 
