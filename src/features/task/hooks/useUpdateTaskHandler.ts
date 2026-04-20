@@ -3,12 +3,12 @@ import { Task } from '../model/entities/task.model';
 import { useUpdateTaskMutation } from './useUpdateTaskMutation';
 import { useUpdateRecurringMutation } from './useUpdateRecurringMutation';
 import { TaskFormValues, ValidTaskFormValues } from '../ui/create-task/taskForm.types';
-import { isVaildTaskForm } from '../ui/create-task/taskForm.utils';
 import { toUpdateTaskRecurringPayload } from '../lib/updateTaskRecurringPayload';
 import { toUpdateTaskPayload } from '../lib/updateTaskPayload';
 import { RecurrenceType } from '../model/types/recurrence.type';
 import { useQueryClient } from '@tanstack/react-query';
 import { TASK_QUERY_KEYS } from '../lib/queryKeys';
+import { isValidTaskForm } from '../ui/create-task/taskForm.utils';
 
 function isRecurringForm(data: ValidTaskFormValues): data is ValidTaskFormValues & {
   recurrence: Exclude<RecurrenceType, 'ONCE'>;
@@ -24,7 +24,7 @@ export function useUpdateTaskHandler(params: TaskCommonParams, task: Task, onClo
   const isPending = updateTaskMutation.isPending || updateRecurringMutation.isPending;
 
   const submit = (data: TaskFormValues) => {
-    if (!isVaildTaskForm(data)) return;
+    if (!isValidTaskForm(data)) return;
 
     if (task.recurrenceId && isRecurringForm(data)) {
       const recurringPayload = toUpdateTaskRecurringPayload(data);

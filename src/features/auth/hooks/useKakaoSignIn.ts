@@ -8,8 +8,8 @@ export const useKakaoSignIn = () => {
 
   return useMutation<User, Error, { redirectUri: string; token: string }>({
     mutationFn: authService.kakaoSignIn,
-    onSuccess: async (user) => {
-      await queryClient.invalidateQueries({ queryKey: USER_QUERY_KEYS.me() });
+    onSuccess: (user) => {
+      queryClient.setQueryData(USER_QUERY_KEYS.me(), user);
     },
   });
 };

@@ -11,6 +11,12 @@ export function useTaskBoardBoard(initialBoard: TaskBoard) {
   const dragLockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    return () => {
+      if (dragLockTimerRef.current) clearTimeout(dragLockTimerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
     if (dragLockRef.current) {
       return;
     }

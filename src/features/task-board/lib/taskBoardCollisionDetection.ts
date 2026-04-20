@@ -1,4 +1,9 @@
-import type { ClientRect, CollisionDetection, DroppableContainer, UniqueIdentifier } from '@dnd-kit/core';
+import type {
+  ClientRect,
+  CollisionDetection,
+  DroppableContainer,
+  UniqueIdentifier,
+} from '@dnd-kit/core';
 import { closestCorners } from '@dnd-kit/core';
 
 const COLUMN_ID_PREFIX = 'task-board-column:';
@@ -38,20 +43,12 @@ function verticalDistanceToRect(pointerY: number, rect: { top: number; height: n
 }
 
 function getColumnStatusFromData(container: DroppableContainer): string | null {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-  return (container.data?.current as any)?.columnStatus ?? null;
+  const currentData = container.data?.current as Record<string, unknown> | undefined;
+  return typeof currentData?.columnStatus === 'string' ? currentData.columnStatus : null;
 }
 
 type Entry = { id: UniqueIdentifier; rect: ClientRect };
 
-/**
- * 1. 포인터 좌표로 타겟 컬럼을 먼저 확정
- * 2. data.columnStatus로 그 컬럼에 속하는 카드만 필터 (CSS transform 영향 없음)
- * 3. 그 카드 중 포인터 직접 히트 → 반환
- * 4. 모든 카드 아래 빈 공간 → 컬럼 반환 (맨 뒤 삽입)
- * 5. 카드 사이 gap → 가장 가까운 카드 반환
- * 6. 빈 컬럼 → 컬럼 반환
- */
 export const taskBoardCollisionDetection: CollisionDetection = (args) => {
   const { active, droppableContainers, droppableRects, pointerCoordinates } = args;
   const activeId = String(active.id);
@@ -82,8 +79,7 @@ export const taskBoardCollisionDetection: CollisionDetection = (args) => {
     }
   }
 
-  let targetColumn =
-    columns.find((col) => isPointInRect(pointerCoordinates, col.rect)) ?? null;
+  let targetColumn = columns.find((col) => isPointInRect(pointerCoordinates, col.rect)) ?? null;
 
   if (!targetColumn && columns.length > 0) {
     targetColumn = columns.reduce((best, col) => {

@@ -47,8 +47,6 @@ export function useGroupActions({ groupId, currentUserId }: Params) {
       await removeMember({ groupId, memberUserId: currentUserId });
       toast.success('팀에서 나갔습니다.');
       leaveModal.close();
-      queryClient.invalidateQueries({ queryKey: USER_QUERY_KEYS.groups() });
-      queryClient.invalidateQueries({ queryKey: GROUP_QUERY_KEYS.all });
       await router.push(ROUTES.FREE_BOARD);
     } catch (e) {
       const err = e as { message?: string };

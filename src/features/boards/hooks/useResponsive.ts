@@ -14,11 +14,11 @@ export function useResponsive() {
 
   useEffect(() => {
     const handler = debounce(() => {
-      setScreen(getSize());
+      const newSize = getSize();
+      setScreen((prev) => (prev !== newSize ? newSize : prev));
     }, 100);
 
     window.addEventListener('resize', handler);
-    handler();
 
     return () => {
       window.removeEventListener('resize', handler);

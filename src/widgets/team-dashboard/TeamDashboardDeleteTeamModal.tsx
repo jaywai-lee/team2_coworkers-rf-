@@ -1,3 +1,4 @@
+import { Button } from '@/shared/ui/Button/Button';
 import { Modal } from '@/shared/ui/modal';
 
 type Props = {
@@ -22,31 +23,40 @@ export function TeamDashboardDeleteTeamModal({
 }: Props) {
   return (
     <Modal isOpen={isOpen} open={open} close={close}>
-      <Modal.Content size="sm" className="[&_button]:cursor-pointer [&_button:disabled]:cursor-not-allowed">
+      <Modal.Content
+        size="sm"
+        className="[&_button]:cursor-pointer [&_button:disabled]:cursor-not-allowed"
+      >
         <Modal.Header className="pb-4">
-          <Modal.Title className="text-lg font-medium text-txt-primary">팀을 삭제하시겠어요?</Modal.Title>
-          <Modal.Description className="text-sm font-medium text-txt-secondary">
+          <Modal.Title className="text-txt-primary text-lg font-medium">
+            팀을 삭제하시겠어요?
+          </Modal.Title>
+          <Modal.Description className="text-txt-secondary text-sm font-medium">
             {teamName} 팀이 삭제되며, 되돌릴 수 없습니다.
           </Modal.Description>
         </Modal.Header>
-        <Modal.Footer className="flex flex-col gap-2 pt-2">
+        <Modal.Footer className="flex gap-2 px-12">
           <Modal.Close asChild>
-            <button
+            <Button
               type="button"
+              variant="secondary"
               disabled={isDeleting}
-              className={`${footerBtnBase} border border-background-tertiary bg-background-primary text-txt-primary`}
+              className="h-12 w-full rounded-xl border border-[#CBD5E1] whitespace-nowrap"
             >
-              취소
-            </button>
+              닫기
+            </Button>
           </Modal.Close>
-          <button
+
+          <Button
             type="button"
             onClick={onConfirm}
+            variant="danger"
             disabled={isDeleting}
-            className={`${footerBtnBase} bg-red-500 text-white`}
+            className="h-12 w-full rounded-xl whitespace-nowrap"
           >
-            {isDeleting ? '처리 중...' : '삭제하기'}
-          </button>
+            {isDeleting && <span className="loading loading-spinner" />}
+            삭제하기
+          </Button>
         </Modal.Footer>
       </Modal.Content>
     </Modal>
