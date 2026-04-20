@@ -4,22 +4,16 @@ import type { TaskBoardTaskGroup } from '../model/taskBoard.types';
 import { TaskRow } from './TaskRow';
 import { TaskCardHeader } from './TaskCardHeader';
 import { TaskCardShell } from './TaskCardShell';
+import { useTaskBoardActionContext } from './TaskBoardActionContext';
 
 export type SortableDragAttributes = ReturnType<typeof useSortable>['attributes'];
 export type SortableDragListeners = ReturnType<typeof useSortable>['listeners'];
 
 export type TaskCardProps = {
   taskGroup: TaskBoardTaskGroup;
-  /** dnd-kit: 카드 드래그 핸들 ref */
   setActivatorNodeRef?: (node: HTMLElement | null) => void;
-  /** dnd-kit: 드래그 어트리뷰트(aria/role 등) */
   dragAttributes?: SortableDragAttributes;
-  /** dnd-kit: 드래그 리스너(포인터 이벤트 등) */
   dragListeners?: SortableDragListeners;
-  onTaskToggle?: (taskId: string, checked: boolean) => void;
-  onEditCard?: (taskGroup: TaskBoardTaskGroup) => void;
-  onDeleteCard?: (taskGroup: TaskBoardTaskGroup) => void;
-  onOpenTaskList?: (taskGroup: TaskBoardTaskGroup) => void;
 };
 
 export function TaskCard({
@@ -27,11 +21,8 @@ export function TaskCard({
   setActivatorNodeRef,
   dragAttributes,
   dragListeners,
-  onTaskToggle,
-  onEditCard,
-  onDeleteCard,
-  onOpenTaskList,
 }: TaskCardProps) {
+  const { onTaskToggle, onEditCard, onDeleteCard, onOpenTaskList } = useTaskBoardActionContext();
   const [collapsed, setCollapsed] = useState(false);
   const tasks = taskGroup.tasks;
 
@@ -48,13 +39,13 @@ export function TaskCard({
   };
 
   const handleTaskToggle = (taskId: string, checked: boolean) => {
-    onTaskToggle?.(taskId, checked);
+    onTaskToggle?.(taskGroup.id, taskId, checked);
   };
 
   return (
     <TaskCardShell
       collapsed={collapsed}
-      onClick={onOpenTaskList ? () => onOpenTaskList(taskGroup) : undefined}
+      onClick={onOpenTaskList ? () => onOpenTaskList(taskGroup.id) : undefined}
       dragActivatorRef={setActivatorNodeRef}
       dragAttributes={dragAttributes}
       dragListeners={dragListeners}
@@ -66,15 +57,19 @@ export function TaskCard({
         checkedTaskCount={checkedTaskCount}
         cardTaskCount={cardTaskCount}
         onToggleCollapsed={toggleCollapsed}
-        onEditCard={() => onEditCard?.(taskGroup)}
-        onDeleteCard={() => onDeleteCard?.(taskGroup)}
+        onEditCard={() => onEditCard?.(taskGroup.id, taskGroup.name)}
+        onDeleteCard={() => onDeleteCard?.(taskGroup.id)}
       />
 
       {!collapsed && (
         <div className="flex-1 overflow-visible">
-          <div className="flex flex-col gap-[10px]">
+          <div className="flex flex-col gap-2.5">
             {tasks.map((task) => (
-              <TaskRow key={task.id} task={task} onToggle={(checked) => handleTaskToggle(task.id, checked)} />
+              <TaskRow
+                key={task.id}
+                task={task}
+                onToggle={(checked) => handleTaskToggle(task.id, checked)}
+              />
             ))}
           </div>
         </div>

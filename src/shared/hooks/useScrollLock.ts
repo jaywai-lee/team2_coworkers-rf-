@@ -6,16 +6,20 @@ export function useScrollLock(isLocked: boolean) {
 
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
 
-    const originalOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    const originalBodyOverflow = document.body.style.overflow;
     const originalPaddingRight = document.body.style.paddingRight;
 
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
+
     if (scrollbarWidth > 0) {
       document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
 
     return () => {
-      document.body.style.overflow = originalOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.body.style.overflow = originalBodyOverflow;
       document.body.style.paddingRight = originalPaddingRight;
     };
   }, [isLocked]);

@@ -1,11 +1,10 @@
 import { formatDistanceToNow } from 'date-fns';
 import { ko } from 'date-fns/locale/ko';
 import { Button } from '@/shared/ui/Button/Button';
-import Dropdown from '@/shared/ui/dropdown';
-import { IconKebab } from '@/shared/ui/icons/IconKebab';
 import { InputBox } from '@/shared/ui/input/InputBox';
 import { Profile } from '@/shared/ui/profile';
 import type { TaskComment } from '../../model/entities/taskComment.model';
+import KebabMenu from '@/features/boards/components/KebabMenu';
 
 function formatCommentTime(date: Date) {
   return formatDistanceToNow(date, { addSuffix: true, locale: ko });
@@ -45,29 +44,18 @@ export function TaskCommentRow({
           decorative
           alt={`${comment.user.nickname} 프로필`}
         />
-        <div className="min-w-0 flex-1">
-          <div className="relative flex items-start justify-between gap-2">
-            <p className="text-txt-primary text-sm font-semibold">{comment.user.nickname}</p>
-            {isOwner && !isEditing && (
-              <Dropdown>
-                <Dropdown.Trigger
-                  onClick={(e) => e.stopPropagation()}
-                  className="text-[#CBD5E1] hover:opacity-80"
-                  aria-label="댓글 메뉴"
-                >
-                  <IconKebab size={20} />
-                </Dropdown.Trigger>
-                <Dropdown.Menu className="absolute right-0 z-[100] mt-1 w-28">
-                  <Dropdown.Item onClick={onStartEdit} className="px-3 py-2">
-                    수정하기
-                  </Dropdown.Item>
-                  <Dropdown.Item onClick={onDelete} className="px-3 py-2">
-                    삭제하기
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            )}
-          </div>
+        <div className="relative min-w-0 flex-1">
+          <p className="text-txt-primary pr-8 text-sm font-semibold">{comment.user.nickname}</p>
+          {isOwner && !isEditing && (
+            <div className="absolute top-0 right-0">
+              <KebabMenu
+                onEdit={onStartEdit}
+                onDelete={onDelete}
+                isDeleteDanger
+                align="side-left"
+              />
+            </div>
+          )}
 
           {isEditing ? (
             <div className="mt-2 space-y-2">

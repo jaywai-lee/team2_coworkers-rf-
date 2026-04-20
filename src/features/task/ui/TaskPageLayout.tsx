@@ -48,7 +48,7 @@ function TaskContentArea({
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   return (
-    <div className="flex min-w-0 flex-1 flex-col gap-4 md:gap-5 lg:gap-6">
+    <div className="flex min-w-0 flex-1 flex-col gap-4 px-12 md:gap-5 lg:gap-6">
       <WeekCalendar value={selectedDate} onChange={setSelectedDate} groupName={selectedListTitle} />
       <TasksSection groupId={groupId} taskListId={currentIdNum} date={selectedDate} />
     </div>
@@ -109,7 +109,7 @@ export function TaskPageLayout({ groupId, taskList }: Props) {
 
   return (
     <div className="bg-background-secondary min-h-screen w-full">
-      <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-3 px-4 py-4 md:gap-5 md:px-6 md:py-15 lg:gap-6 lg:px-8 lg:py-[120px] xl:max-w-[1120px] xl:px-10">
+      <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-3 py-4 md:gap-5 md:py-15 lg:max-w-[1120px] lg:gap-6 lg:py-[120px]">
         <Header />
         <div className="flex w-full flex-col gap-4 md:gap-5 lg:flex-row lg:gap-8">
           {showTaskListSkeleton ? (
@@ -117,7 +117,7 @@ export function TaskPageLayout({ groupId, taskList }: Props) {
           ) : (
             <>
               <div className="hidden w-[220px] shrink-0 lg:flex lg:w-[240px] lg:flex-col lg:gap-4">
-                <h2 className="text-txt-primary text-base font-semibold md:text-lg">할 일</h2>
+                <h2 className="text-txt-primary text-base font-bold md:text-xl">할 일 목록</h2>
 
                 <div className="border-background-tertiary cursor-pointer rounded-2xl bg-white p-3 shadow-sm md:p-4">
                   <TaskListSidebar

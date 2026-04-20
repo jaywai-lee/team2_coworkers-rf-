@@ -142,6 +142,8 @@ export default function CommentSection({ article, comments }: Props) {
                       <KebabMenu
                         onEdit={() => toggleEdit(c.id, c.content)}
                         onDelete={() => openDeleteModal(c.id)}
+                        isDeleteDanger
+                        align="side-right"
                       />
                     ) : (
                       <div className="invisible h-5 w-5" />

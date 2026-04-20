@@ -1,4 +1,4 @@
-export { TASK_BOARD_COLUMN_STATUS_LABEL } from './taskBoardColumnLabels';
+export { TASK_BOARD_COLUMN_STATUS_LABEL } from '../lib/taskBoardColumnLabels';
 export { TaskBoardView } from './TaskBoardView';
 export { TaskColumn } from './TaskColumn';
 export type { TaskColumnProps } from './TaskColumn';

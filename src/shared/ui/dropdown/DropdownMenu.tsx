@@ -4,18 +4,19 @@ import { createPortal } from 'react-dom';
 import { cn } from '@/shared/lib/cn';
 import { useDropdown } from './Dropdown';
 
-type MenuAlign = 'left' | 'right';
-export type DropdownMenuAlign = MenuAlign;
+export type DropdownMenuAlign = 'left' | 'right' | 'side-left' | 'side-right';
 
-const alignStyles: Record<MenuAlign, string> = {
-  left: 'left-0',
-  right: 'right-0',
+const alignStyles: Record<DropdownMenuAlign, string> = {
+  left: 'left-0 top-full',
+  right: 'right-0 top-full',
+  'side-left': 'right-full top-0',
+  'side-right': 'left-full top-0',
 };
 
 interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'align'> {
   children: React.ReactNode;
   className?: string;
-  align?: MenuAlign;
+  align?: DropdownMenuAlign;
 }
 
 const MENU_GAP_PX = 8;
@@ -33,21 +34,42 @@ export default function DropdownMenu({ children, className, align = 'right', ...
     const trigger = triggerRef.current;
     if (!trigger) return;
     const r = trigger.getBoundingClientRect();
-    if (align === 'right') {
-      setFixedStyle({
-        position: 'fixed',
-        top: r.bottom + MENU_GAP_PX,
-        left: r.right,
-        transform: 'translateX(-100%)',
-        zIndex: 100,
-      });
-    } else {
-      setFixedStyle({
-        position: 'fixed',
-        top: r.bottom + MENU_GAP_PX,
-        left: r.left,
-        zIndex: 100,
-      });
+
+    switch (align) {
+      case 'right':
+        setFixedStyle({
+          position: 'fixed',
+          top: r.bottom + MENU_GAP_PX,
+          left: r.right,
+          transform: 'translateX(-100%)',
+          zIndex: 100,
+        });
+        break;
+      case 'left':
+        setFixedStyle({
+          position: 'fixed',
+          top: r.bottom + MENU_GAP_PX,
+          left: r.left,
+          zIndex: 100,
+        });
+        break;
+      case 'side-left':
+        setFixedStyle({
+          position: 'fixed',
+          top: r.top,
+          left: r.left - MENU_GAP_PX,
+          transform: 'translateX(-100%)',
+          zIndex: 100,
+        });
+        break;
+      case 'side-right':
+        setFixedStyle({
+          position: 'fixed',
+          top: r.top,
+          left: r.right + MENU_GAP_PX,
+          zIndex: 100,
+        });
+        break;
     }
   }, [align, triggerRef]);
 
@@ -79,14 +101,19 @@ export default function DropdownMenu({ children, className, align = 'right', ...
 
   if (!isOpen) return null;
 
-  const baseClass = 'overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md';
+  const marginClass = align.startsWith('side-')
+    ? align === 'side-left'
+      ? 'mr-2'
+      : 'ml-2'
+    : 'mt-2';
 
   const menu = (
     <div
       id={menuId}
       ref={menuRef}
       className={cn(
-        'absolute mt-2 rounded-2xl border border-gray-200 bg-white shadow-md',
+        'absolute rounded-2xl border border-gray-200 bg-white shadow-md',
+        marginClass,
         alignStyles[align],
         className,
       )}

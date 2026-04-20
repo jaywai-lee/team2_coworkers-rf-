@@ -4,12 +4,11 @@ import { IconCalendar } from '@/shared/ui/icons/IconCalendar';
 import { IconRepeat } from '@/shared/ui/icons/IconRepeat';
 import { formatDate } from '@/shared/lib/date';
 import { IconComment } from '@/shared/ui/icons/IconComment';
-import { IconKebab } from '@/shared/ui/icons/IconKebab';
 import { useToggleTaskMutation } from '../hooks/useToggleTaskMutation';
 import { TaskCommonParams } from '../model/params/task.params';
-import Dropdown from '@/shared/ui/dropdown';
 import { RECURRENCE_LABEL_MAP } from '../model/constants/recurrenceLabel';
 import { memo } from 'react';
+import KebabMenu from '@/features/boards/components/KebabMenu';
 
 type Props = {
   task: Task;
@@ -83,35 +82,13 @@ function TaskItem({ task, onClick, params, onDeleteClick, onEditClick }: Props) 
           <MetaItem icon={<IconRepeat />}>{RECURRENCE_LABEL_MAP[task.recurrence]}</MetaItem>
         </div>
       </div>
-      <Dropdown>
-        <Dropdown.Trigger
-          onClick={(e) => e.stopPropagation()}
-          className="text-icon-primary cursor-pointer rounded p-1"
-          aria-label="할 일 메뉴"
-        >
-          <IconKebab size={20} />
-        </Dropdown.Trigger>
-        <Dropdown.Menu className="absolute right-0 z-50 mt-2 w-28 overflow-hidden">
-          <Dropdown.Item
-            onClick={(e) => {
-              e.stopPropagation();
-              onEditClick(task);
-            }}
-            className="px-3 py-2"
-          >
-            수정하기
-          </Dropdown.Item>
-          <Dropdown.Item
-            onClick={(e) => {
-              e.stopPropagation();
-              onDeleteClick(task);
-            }}
-            className="px-3 py-2"
-          >
-            삭제하기
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
+
+      <KebabMenu
+        onEdit={() => onEditClick(task)}
+        onDelete={() => onDeleteClick(task)}
+        isDeleteDanger
+        align="side-left"
+      />
     </li>
   );
 }

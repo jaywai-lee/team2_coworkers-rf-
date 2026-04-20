@@ -3,7 +3,7 @@ import { Skeleton } from '@/shared/ui/skeleton/Skeleton';
 export function TeamDashboardApiLoading() {
   return (
     <div
-      className="flex min-h-0 flex-1 flex-col gap-6"
+      className="flex min-h-0 flex-1 flex-col gap-6 lg:mx-auto"
       role="status"
       aria-busy="true"
       aria-live="polite"

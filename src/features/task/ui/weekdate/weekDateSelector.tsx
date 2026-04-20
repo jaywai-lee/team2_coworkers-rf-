@@ -30,7 +30,7 @@ export default function WeekDateSelector({ value, onChange }: Props) {
             className={cn(
               'flex h-14 w-[72px] shrink-0 flex-col items-center justify-center gap-0.5 rounded-xl border px-2 py-2 transition md:h-16 md:w-[84px] md:gap-1 md:px-3 md:py-2.5 lg:h-[68px] lg:w-[95px] lg:px-4 lg:py-3',
               isSelected
-                ? 'bg-txt-primary text-txt-inverse hover:bg-txt-primary'
+                ? 'bg-brand-primary text-txt-inverse hover:bg-brand-tertiary'
                 : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50',
             )}
           >

@@ -1,30 +1,27 @@
-import { useRef, useState } from 'react';
-import { DndContext, DragOverlay, defaultDropAnimationSideEffects } from '@dnd-kit/core';
+import { DndContext } from '@dnd-kit/core';
 import { cn } from '@/shared/lib/cn';
-import type {
-  TaskBoard,
-  TaskBoardColumn,
-  TaskBoardColumnStatus,
-  TaskBoardTaskGroup,
-} from '../model/taskBoard.types';
-import { MOCK_TASK_BOARD } from '../lib/mockData';
-import { applyTaskToggleToBoard } from '../lib/applyTaskToggleToBoard';
+import type { TaskBoard, TaskBoardColumn, TaskBoardColumnStatus } from '../model/taskBoard.types';
 import { taskBoardCollisionDetection } from '../lib/taskBoardCollisionDetection';
 import { useTaskBoardDnd, type TaskListOrderPersistPayload } from '../lib/useTaskBoardDnd';
 import { useTaskBoardSensors } from '../lib/useTaskBoardSensors';
 import type { ReactNode } from 'react';
 import { TaskColumn } from './TaskColumn';
-import { TaskCard } from './TaskCard';
 import { CreateTaskBoardModal } from './CreateTaskBoardModal';
-import { useTaskBoardCardActions } from './useTaskBoardCardActions';
+import { useTaskBoardCardActions } from '../hooks/useTaskBoardCardActions';
 import { TaskBoardCardActionModals } from './TaskBoardCardActionModals';
-import { useTaskBoardBoard } from './useTaskBoardBoard';
+import { useTaskBoardBoard } from '../hooks/useTaskBoardBoard';
+import { TaskBoardDragOverlay } from './TaskBoardDragOverlay';
+import { EMPTY_TASK_BOARD } from '../lib/constants';
+import { useTaskBoardActions } from '../hooks/useTaskBoardActions';
+import { TaskBoardActionProvider } from './TaskBoardActionContext';
 
 type Props = {
   initialBoard?: TaskBoard;
   trailingPanel?: ReactNode;
-  /** true 성공. false 실패. 콜백이 존재하고 true면 생성 로컬 setBoard는 생략(캐시/프롭 동기화 경로 사용). */
-  onCreateTaskGroup?: (params: { status: TaskBoardColumnStatus; title: string }) => Promise<boolean> | boolean;
+  onCreateTaskGroup?: (params: {
+    status: TaskBoardColumnStatus;
+    title: string;
+  }) => Promise<boolean> | boolean;
   onToggleTask?: (params: {
     taskGroupId: string;
     taskId: string;
@@ -34,32 +31,21 @@ type Props = {
     taskGroupId: string;
     taskIds: string[];
   }) => Promise<boolean | void> | boolean | void;
-  /** 완료→할 일 드롭 시 체크 해제를 서버에 반영 */
   onUncheckTaskGroupByDrop?: (params: {
     taskGroupId: string;
     taskIds: string[];
   }) => Promise<boolean | void> | boolean | void;
-  /** true면 캐시/프롭이 곧 반영되므로 보드 로컬 갱신 생략. false 실패. undefined·void면 로컬 갱신. */
-  onUpdateTaskGroup?: (params: { taskGroupId: string; title: string }) => Promise<boolean | void> | boolean | void;
+  onUpdateTaskGroup?: (params: {
+    taskGroupId: string;
+    title: string;
+  }) => Promise<boolean | void> | boolean | void;
   onDeleteTaskGroup?: (params: { taskGroupId: string }) => Promise<boolean | void> | boolean | void;
   onOpenTaskList?: (taskGroupId: string) => void;
-  /** 드래그 후 할 일 목록 순서를 서버 `displayIndex`에 반영 */
   onTaskListOrderPersist?: (payload: TaskListOrderPersistPayload) => Promise<void> | void;
 };
 
-const INITIAL_CARD_INDEX: Record<TaskBoardColumnStatus, number> = {
-  TODO: 1,
-  IN_PROGRESS: 1,
-  DONE: 1,
-};
-
-function createTaskGroup(status: TaskBoardColumnStatus, index: number, name: string): TaskBoardTaskGroup {
-  const groupId = `${status}-card-${index}`;
-  return { id: groupId, name, tasks: [] };
-}
-
 export function TaskBoardView({
-  initialBoard = MOCK_TASK_BOARD,
+  initialBoard = EMPTY_TASK_BOARD,
   trailingPanel,
   onCreateTaskGroup,
   onToggleTask,
@@ -71,64 +57,32 @@ export function TaskBoardView({
   onTaskListOrderPersist,
 }: Props) {
   const { board, setBoard, setCardNameLocal, removeCardLocal } = useTaskBoardBoard(initialBoard);
-  const [creatingStatus, setCreatingStatus] = useState<TaskBoardColumnStatus | null>(null);
-  const nextCardIndexByStatus = useRef<Record<TaskBoardColumnStatus, number>>({ ...INITIAL_CARD_INDEX });
   const sensors = useTaskBoardSensors();
-  const { activeTaskGroupId, dropIndicatorId, activeTaskGroup, handleDragStart, handleDragOver, handleDragEnd, handleDragCancel } =
-    useTaskBoardDnd({
-      board,
-      setBoard,
-      onTaskListOrderPersist,
-      onTaskGroupDropped: ({ taskGroupId, targetStatus, taskIdsToComplete, taskIdsToUncheck }) => {
-        if (targetStatus === 'DONE' && taskIdsToComplete.length > 0) {
-          void onCompleteTaskGroupByDrop?.({ taskGroupId, taskIds: taskIdsToComplete });
-        }
-        if (targetStatus === 'TODO' && taskIdsToUncheck.length > 0) {
-          void onUncheckTaskGroupByDrop?.({ taskGroupId, taskIds: taskIdsToUncheck });
-        }
-      },
-    });
 
-  const openCreateTaskBoardModal = (status: TaskBoardColumnStatus) => {
-    setCreatingStatus(status);
-  };
+  const { creatingStatus, openCreateModal, closeCreateModal, handleAddCard, handleTaskToggle } =
+    useTaskBoardActions({ board, setBoard, onCreateTaskGroup, onToggleTask });
 
-  const handleAddCard = async (title: string) => {
-    if (!creatingStatus) return;
-    const trimmedTitle = title.trim();
-    if (!trimmedTitle) return;
-
-    const status = creatingStatus;
-    const created = await onCreateTaskGroup?.({ status, title: trimmedTitle });
-    if (created === false) return;
-
-    // 콜백이 있는 경로(팀 대시보드)는 캐시 동기화로 반영되므로 로컬 중복 생성 방지.
-    if (onCreateTaskGroup && created === true) {
-      setCreatingStatus(null);
-      return;
-    }
-
-    const index = nextCardIndexByStatus.current[status]++;
-    const newGroup = createTaskGroup(status, index, trimmedTitle);
-
-    setBoard((prev) => ({
-      ...prev,
-      columns: prev.columns.map((col) =>
-        col.status === status ? { ...col, taskGroups: [newGroup, ...col.taskGroups] } : col,
-      ),
-    }));
-    setCreatingStatus(null);
-  };
-
-  const handleTaskToggle = async (taskGroupId: string, taskId: string, checked: boolean) => {
-    const prevBoard = board;
-    setBoard((prev) => applyTaskToggleToBoard(prev, taskGroupId, taskId, checked));
-
-    const toggled = await onToggleTask?.({ taskGroupId, taskId, checked });
-    if (toggled === false) {
-      setBoard(prevBoard);
-    }
-  };
+  const {
+    activeTaskGroupId,
+    dropIndicatorId,
+    activeTaskGroup,
+    handleDragStart,
+    handleDragOver,
+    handleDragEnd,
+    handleDragCancel,
+  } = useTaskBoardDnd({
+    board,
+    setBoard,
+    onTaskListOrderPersist,
+    onTaskGroupDropped: ({ taskGroupId, targetStatus, taskIdsToComplete, taskIdsToUncheck }) => {
+      if (targetStatus === 'DONE' && taskIdsToComplete.length > 0) {
+        void onCompleteTaskGroupByDrop?.({ taskGroupId, taskIds: taskIdsToComplete });
+      }
+      if (targetStatus === 'TODO' && taskIdsToUncheck.length > 0) {
+        void onUncheckTaskGroupByDrop?.({ taskGroupId, taskIds: taskIdsToUncheck });
+      }
+    },
+  });
 
   const {
     editingCard,
@@ -148,72 +102,53 @@ export function TaskBoardView({
     removeCardLocal,
   });
 
-  return (
-    <DndContext
-      collisionDetection={taskBoardCollisionDetection}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-      onDragEnd={handleDragEnd}
-      onDragCancel={handleDragCancel}
-      sensors={sensors}
-    >
-      <div
-        className={cn(
-          'flex flex-col gap-[16px] items-start overflow-x-visible pb-2',
-          'lg:flex-row lg:items-start lg:gap-[20px] lg:overflow-x-auto',
-        )}
-      >
-        {board.columns.map((col: TaskBoardColumn) => (
-          <div
-            key={col.id}
-            className="min-w-0 w-full shrink-0 lg:w-[270px]"
-          >
-            <TaskColumn
-              status={col.status}
-              taskGroups={col.taskGroups}
-              onAddCard={() => openCreateTaskBoardModal(col.status)}
-              onTaskToggle={handleTaskToggle}
-              onEditCard={openEditCardModal}
-              onDeleteCard={openDeleteCardModal}
-              onOpenTaskList={onOpenTaskList}
-              activeTaskGroupId={activeTaskGroupId}
-              dropIndicatorId={dropIndicatorId}
-            />
-          </div>
-        ))}
-        {trailingPanel != null ? (
-          <div className="hidden min-w-0 shrink-0 self-start lg:flex lg:w-[240px] lg:flex-col">{trailingPanel}</div>
-        ) : null}
-      </div>
+  const actionValues = {
+    onTaskToggle: handleTaskToggle,
+    onEditCard: openEditCardModal,
+    onDeleteCard: openDeleteCardModal,
+    onOpenTaskList: onOpenTaskList,
+  };
 
-      <DragOverlay
-        dropAnimation={{
-          duration: 260,
-          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
-          sideEffects: defaultDropAnimationSideEffects({
-            styles: {
-              active: {
-                opacity: '0.7',
-              },
-            },
-          }),
-        }}
+  return (
+    <TaskBoardActionProvider value={actionValues}>
+      <DndContext
+        collisionDetection={taskBoardCollisionDetection}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
+        sensors={sensors}
       >
-        {activeTaskGroup ? (
-          <div
-            className={cn(
-              'box-border w-[calc(100vw-2rem)] max-w-[42rem] scale-[1.02] drop-shadow-[0_14px_26px_rgba(15,23,42,0.18)]',
-              'lg:w-[270px] lg:max-w-[270px]',
-            )}
-          >
-            <TaskCard taskGroup={activeTaskGroup} />
-          </div>
-        ) : null}
-      </DragOverlay>
+        <div
+          className={cn(
+            'flex flex-col items-start gap-4 overflow-x-visible pb-2',
+            'lg:flex-row lg:items-start lg:gap-5 lg:overflow-x-auto lg:overflow-y-hidden',
+          )}
+        >
+          {board.columns.map((col: TaskBoardColumn) => (
+            <div key={col.id} className="w-full min-w-0 shrink-0 lg:w-67.5">
+              <TaskColumn
+                status={col.status}
+                taskGroups={col.taskGroups}
+                onAddCard={() => openCreateModal(col.status)}
+                activeTaskGroupId={activeTaskGroupId}
+                dropIndicatorId={dropIndicatorId}
+              />
+            </div>
+          ))}
+          {trailingPanel != null && (
+            <div className="hidden min-w-0 shrink-0 self-start lg:flex lg:w-60 lg:flex-col">
+              {trailingPanel}
+            </div>
+          )}
+        </div>
+
+        <TaskBoardDragOverlay activeTaskGroup={activeTaskGroup} />
+      </DndContext>
 
       <CreateTaskBoardModal
         isOpen={creatingStatus !== null}
-        close={() => setCreatingStatus(null)}
+        close={closeCreateModal}
         onSubmit={handleAddCard}
       />
 
@@ -227,6 +162,6 @@ export function TaskBoardView({
         setDeletingCardId={setDeletingCardId}
         onConfirmDelete={handleConfirmDeleteCard}
       />
-    </DndContext>
+    </TaskBoardActionProvider>
   );
 }

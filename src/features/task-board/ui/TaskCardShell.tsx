@@ -48,14 +48,13 @@ export function TaskCardShell({
       {...dragListeners}
       onClick={onClick}
       className={cn(
-        'flex w-full min-w-0 max-w-full flex-col rounded-[12px] border border-background-tertiary bg-background-primary',
+        'border-background-tertiary bg-background-primary flex w-full max-w-full min-w-0 flex-col rounded-[12px] border',
         'max-[767px]:max-w-[343px]',
         'lg:max-w-[270px]',
         dragListeners && 'cursor-grab touch-none active:cursor-grabbing',
         onClick && !dragListeners && 'cursor-pointer',
-        collapsed
-          ? 'h-[54px] gap-0 px-5 pt-4 pb-0'
-          : 'min-h-[151px] gap-[10px] px-5 pt-4 pb-6',
+        'px-5 pt-2.5',
+        collapsed ? 'h-[54px] overflow-hidden' : 'min-h-[151px] gap-[10px] pb-6',
       )}
     >
       {children}

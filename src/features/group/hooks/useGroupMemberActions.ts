@@ -8,7 +8,7 @@ type Params = {
   groupId: number;
 };
 
-export function useTeamDashboardRemoveMemberActions({ groupId }: Params) {
+export function useGroupMemberActions({ groupId }: Params) {
   const {
     isOpen: isRemoveMemberModalOpen,
     open: openRemoveMemberModal,
@@ -17,10 +17,8 @@ export function useTeamDashboardRemoveMemberActions({ groupId }: Params) {
 
   const [memberToRemove, setMemberToRemove] = useState<MemberCardItem | null>(null);
 
-  const {
-    mutateAsync: removeGroupMember,
-    isPending: isRemovingMember,
-  } = useRemoveGroupMemberMutation();
+  const { mutateAsync: removeGroupMember, isPending: isRemovingMember } =
+    useRemoveGroupMemberMutation();
 
   const handleRemoveMemberRequest = (member: MemberCardItem) => {
     setMemberToRemove(member);
@@ -56,4 +54,3 @@ export function useTeamDashboardRemoveMemberActions({ groupId }: Params) {
     handleConfirmRemoveMember,
   };
 }
-

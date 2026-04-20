@@ -9,15 +9,9 @@ import { TaskCard } from './TaskCard';
 type TaskSortableCardItemProps = {
   taskGroup: TaskBoardTaskGroup;
   columnStatus: string;
-  /** 현재 드래그 중인 카드가 이 컬럼에 속하는지 여부 */
   isActiveInThisColumn: boolean;
-  onTaskToggle?: (taskId: string, checked: boolean) => void;
-  onEditCard?: (taskGroupId: string, currentTitle: string) => void;
-  onDeleteCard?: (taskGroupId: string) => void;
-  onOpenTaskList?: (taskGroupId: string) => void;
   activeTaskGroupId?: string | null;
   dropIndicatorId?: string | null;
-  /** 첫 카드 `before` 삽입선을 컬럼 상단에서 그릴 때 중복 방지 */
   suppressDropIndicatorBefore?: boolean;
 };
 
@@ -25,8 +19,8 @@ function DropIndicatorLine({ edge }: { edge: 'top' | 'bottom' }) {
   return (
     <div
       className={cn(
-        'pointer-events-none absolute left-0 right-0 h-[3px] rounded-full bg-brand-primary',
-        edge === 'top' ? '-top-[6px]' : '-bottom-[6px]',
+        'bg-brand-primary pointer-events-none absolute right-0 left-0 z-10 h-0.75 rounded-full',
+        edge === 'top' ? '-top-1.5' : '-bottom-1.5',
       )}
       aria-hidden
     />
@@ -36,11 +30,6 @@ function DropIndicatorLine({ edge }: { edge: 'top' | 'bottom' }) {
 export function TaskSortableCardItem({
   taskGroup,
   columnStatus,
-  isActiveInThisColumn,
-  onTaskToggle,
-  onEditCard,
-  onDeleteCard,
-  onOpenTaskList,
   activeTaskGroupId,
   dropIndicatorId,
   suppressDropIndicatorBefore = false,
@@ -57,10 +46,7 @@ export function TaskSortableCardItem({
   } = useSortable({
     id,
     data: { columnStatus },
-    transition: {
-      duration: 260,
-      easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
-    },
+    transition: null,
   });
 
   const nodeRef = useRef<HTMLDivElement | null>(null);
@@ -72,26 +58,24 @@ export function TaskSortableCardItem({
     [setNodeRef],
   );
 
-  const shouldApplyTransform = isActiveInThisColumn || !activeTaskGroupId;
+  const isDragActive = activeTaskGroupId != null;
 
   useLayoutEffect(() => {
     const el = nodeRef.current;
     if (!el) return;
-    if (!shouldApplyTransform) {
+    if (isDragActive) {
       el.style.transform = '';
       el.style.transition = '';
       return;
     }
-    el.style.transform = CSS.Transform.toString(transform) ?? '';
-    el.style.transition = isDragging ? 'none' : (transition ?? '');
-  }, [transform, transition, isDragging, shouldApplyTransform]);
+    el.style.transform = CSS.Translate.toString(transform) ?? '';
+    el.style.transition = transition ?? '';
+  }, [transform, transition, isDragActive]);
 
   const showDropIndicatorBefore =
-    !suppressDropIndicatorBefore &&
-    dropIndicatorId === `before:${taskGroup.id}` &&
-    activeTaskGroupId !== taskGroup.id;
-  const showDropIndicatorAfter =
-    dropIndicatorId === `after:${taskGroup.id}` && activeTaskGroupId !== taskGroup.id;
+    !suppressDropIndicatorBefore && dropIndicatorId === `before:${taskGroup.id}`;
+
+  const showDropIndicatorAfter = dropIndicatorId === `after:${taskGroup.id}`;
 
   return (
     <div
@@ -99,7 +83,7 @@ export function TaskSortableCardItem({
       className={cn(
         'relative w-full max-w-full will-change-transform',
         !isDragging && 'transition-opacity duration-200 ease-out',
-        isDragging && 'opacity-60',
+        isDragging && 'opacity-30',
       )}
     >
       {showDropIndicatorBefore && <DropIndicatorLine edge="top" />}
@@ -108,10 +92,6 @@ export function TaskSortableCardItem({
         setActivatorNodeRef={setActivatorNodeRef}
         dragAttributes={attributes}
         dragListeners={listeners}
-        onTaskToggle={onTaskToggle}
-        onEditCard={(group) => onEditCard?.(group.id, group.name)}
-        onDeleteCard={(group) => onDeleteCard?.(group.id)}
-        onOpenTaskList={(group) => onOpenTaskList?.(group.id)}
       />
       {showDropIndicatorAfter && <DropIndicatorLine edge="bottom" />}
     </div>

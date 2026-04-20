@@ -39,6 +39,9 @@ export function useCreateTaskMutation(params: UseCreateTaskMutationParams) {
       queryClient.invalidateQueries({
         queryKey: GROUP_QUERY_KEYS.detail(params.groupId),
       });
+      queryClient.invalidateQueries({
+        queryKey: GROUP_QUERY_KEYS.tasks(params.groupId, params.date),
+      });
     },
   });
 }
