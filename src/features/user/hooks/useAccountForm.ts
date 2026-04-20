@@ -37,7 +37,7 @@ export function useAccountForm() {
   //내부 이탈 방지
   useEffect(() => {
     const handleRouteChangeStart = (url: string) => {
-      if (isDirty && url !== router.asPath) {
+      if (isDirty && url.split('?')[0] !== router.asPath.split('?')[0]) {
         setIsModalOpen(true);
         setNextRoute(url);
         router.events.emit('routeChangeError'); //강제로 에러 던져서 이동 중지
@@ -69,8 +69,10 @@ export function useAccountForm() {
   const handleConfirmLeave = () => {
     setIsModalOpen(false);
     if (nextRoute) {
-      reset(undefined, { keepValues: true });
-      router.push(nextRoute);
+      reset(undefined, { keepValues: true, keepDirty: false });
+      setTimeout(() => {
+        router.push(nextRoute);
+      }, 0);
     }
   };
 

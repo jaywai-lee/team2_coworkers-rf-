@@ -10,8 +10,6 @@ export function useDeleteGroupMutation() {
   return useMutation<void, ApiError, DeleteGroupParams>({
     mutationFn: deleteGroup,
     onSuccess: (_, { groupId }) => {
-      // invalidateQueries로 refetch가 따로 돌면 사이드바·페이지 갱신 시점이 어긋남.
-      // 삭제 직후 한 번에 캐시를 맞춤 (동기 setQueryData + removeQueries).
       queryClient.setQueryData<MembershipGroup[]>(USER_QUERY_KEYS.groups(), (prev) =>
         prev ? prev.filter((g) => g.id !== groupId) : prev,
       );

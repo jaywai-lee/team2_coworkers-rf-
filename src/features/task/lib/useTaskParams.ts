@@ -17,15 +17,9 @@ export function useTaskParams(): TaskCommonParams {
   const router = useRouter();
   const { groupId, teamId, taskListId } = router.query;
   const rawGroupId = groupId ?? teamId;
-  if (!rawGroupId || !taskListId) {
-    return {
-      groupId: 1,
-      taskListId: 1,
-    };
-  }
 
   return {
-    groupId: toNumber(rawGroupId, 'groupId'),
-    taskListId: toNumber(taskListId, 'taskListId'),
+    groupId: rawGroupId ? toNumber(rawGroupId, 'groupId') : 0,
+    taskListId: taskListId ? toNumber(taskListId, 'taskListId') : 0,
   };
 }

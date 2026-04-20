@@ -1,5 +1,5 @@
 import { TaskList } from '@/features/task/model/entities/task.model';
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { TaskBoardColumnStatus } from '../model';
 import {
   loadTaskBoardColumnOverrides,
@@ -19,7 +19,7 @@ export function useTaskBoardState(groupId: number, boardTaskLists: TaskList[]) {
     setColumnOverrides(loadTaskBoardColumnOverrides(groupId));
   }, [groupId]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setColumnOverrides((prev) =>
       pruneColumnOverridesForTodoComputed(prev, groupId, boardTaskLists),
     );

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { UserTaskHistory } from '@/features/user/model/entities/user.model';
+import type { UserTaskHistory } from '@/features/user/model/entities/user.model';
 import { formatDateWithDay } from '@/shared/lib/date';
 
 export function useHistoryBoardData(
@@ -9,46 +9,40 @@ export function useHistoryBoardData(
   const isEmpty = !historyList || historyList.length === 0;
 
   const { sliderData, displayData } = useMemo(() => {
-    let newSliderData: Record<string, number> = {};
-    let nestedGroupedData: Record<string, Record<string, UserTaskHistory[]>> = {};
+    const sliderCounts: Record<string, number> = {};
+    const groupedData: Record<string, Record<string, UserTaskHistory[]>> = {};
 
     if (!historyList || historyList.length === 0) {
-      return { sliderData: newSliderData, displayData: nestedGroupedData };
+      return { sliderData: sliderCounts, displayData: groupedData };
     }
-    // 최신 날짜순으로 정렬
+
     const sortedList = [...historyList].sort((a, b) => {
       const dateA = new Date(a.doneAt || a.date).getTime();
       const dateB = new Date(b.doneAt || b.date).getTime();
       return dateB - dateA; // 내림차순
     });
 
-    // 카테고리 데이터와 날짜,이름별 그룹 생성
     sortedList.forEach((task) => {
-      newSliderData[task.name] = (newSliderData[task.name] || 0) + 1;
+      sliderCounts[task.name] = (sliderCounts[task.name] || 0) + 1;
+
+      if (selectedCategory && task.name !== selectedCategory) {
+        return;
+      }
 
       const dateHeader = formatDateWithDay(task.date);
-      const taskTypeName = task.name;
 
-      if (!nestedGroupedData[dateHeader]) nestedGroupedData[dateHeader] = {};
-      if (!nestedGroupedData[dateHeader][taskTypeName]) {
-        nestedGroupedData[dateHeader][taskTypeName] = [];
+      if (!groupedData[dateHeader]) {
+        groupedData[dateHeader] = {};
       }
-      nestedGroupedData[dateHeader][taskTypeName].push(task);
+      if (!groupedData[dateHeader][task.name]) {
+        groupedData[dateHeader][task.name] = [];
+      }
+
+      groupedData[dateHeader][task.name].push(task);
     });
 
-    //  필터링 적용
-    let finalDisplayData = nestedGroupedData;
-
-    if (selectedCategory) {
-      finalDisplayData = {};
-      Object.entries(nestedGroupedData).forEach(([dateHeader, taskTypeGroups]) => {
-        if (taskTypeGroups[selectedCategory]) {
-          finalDisplayData[dateHeader] = { [selectedCategory]: taskTypeGroups[selectedCategory] };
-        }
-      });
-    }
-
-    return { sliderData: newSliderData, displayData: finalDisplayData };
+    return { sliderData: sliderCounts, displayData: groupedData };
   }, [historyList, selectedCategory]);
+
   return { isEmpty, sliderData, displayData };
 }

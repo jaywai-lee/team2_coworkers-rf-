@@ -14,6 +14,6 @@ export function combineDateTime(date: Date, time: Time): Date {
   });
 }
 
-export function isVaildTaskForm(data: TaskFormValues): data is ValidTaskFormValues {
+export function isValidTaskForm(data: TaskFormValues): data is ValidTaskFormValues {
   return Boolean(data.dateTime?.date && data.dateTime?.time);
 }

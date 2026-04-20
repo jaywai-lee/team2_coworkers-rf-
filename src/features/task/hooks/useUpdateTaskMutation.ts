@@ -35,11 +35,7 @@ export function useUpdateTaskMutation(params: UseUpdateTaskMutationParams) {
       toast.success('할 일을 수정했습니다.');
 
       queryClient.invalidateQueries({
-        queryKey: [
-          ...TASK_QUERY_KEYS.all,
-          'list',
-          { groupId: params.groupId, taskListId: params.taskListId },
-        ],
+        queryKey: TASK_QUERY_KEYS.lists(params.groupId),
         refetchType: 'active',
       });
     },

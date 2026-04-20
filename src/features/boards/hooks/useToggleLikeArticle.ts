@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { likeArticle } from '../api/likeArticle';
 import { unlikeArticle } from '../api/unlikeArticle';
 import { ARTICLE_QUERY_KEYS } from '../model/querykeys';
+import { ArticleDetail } from '../model/entities/article.model';
 
 export function useToggleLikeArticle() {
   const queryClient = useQueryClient();
@@ -17,7 +18,7 @@ export function useToggleLikeArticle() {
 
       const previous = queryClient.getQueryData(detailKey);
 
-      queryClient.setQueryData(detailKey, (old: any) =>
+      queryClient.setQueryData(detailKey, (old: ArticleDetail | undefined) =>
         old
           ? {
               ...old,
