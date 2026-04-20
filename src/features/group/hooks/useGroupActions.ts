@@ -13,7 +13,7 @@ type Params = {
   currentUserId: number | undefined;
 };
 
-export function useTeamDashboardGroupActions({ groupId, currentUserId }: Params) {
+export function useGroupActions({ groupId, currentUserId }: Params) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const deleteModal = useModal(false);

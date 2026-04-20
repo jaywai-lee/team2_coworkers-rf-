@@ -8,11 +8,10 @@ import { Button } from '@/shared/ui/Button/Button';
 import { IconCheck, IconClose } from '@/shared/ui/icons';
 import { RECURRENCE_LABEL_MAP } from '../model/constants/recurrenceLabel';
 import { TaskDetailComments } from './task-comments/TaskDetailComments';
-import Dropdown from '@/shared/ui/dropdown';
-import { IconKebab } from '@/shared/ui/icons/IconKebab';
 import { Profile } from '@/shared/ui/profile';
 import { cn } from '@/shared/lib/cn';
 import { useEffect, useState } from 'react';
+import KebabMenu from '@/features/boards/components/KebabMenu';
 
 type Props = {
   task: Task | null;
@@ -111,43 +110,13 @@ export default function TaskDetailPanel({
                 {displayTask.title}
               </h2>
               <div className="relative shrink-0" onClick={(e) => e.stopPropagation()}>
-                <Dropdown>
-                  <Dropdown.Trigger
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (isPending) e.preventDefault();
-                    }}
-                    className={cn(
-                      'text-icon-primary hover:text-txt-primary cursor-pointer rounded p-1 text-gray-400',
-                      isPending && 'pointer-events-none opacity-40',
-                    )}
-                    aria-label="할 일 메뉴"
-                  >
-                    <IconKebab size={20} />
-                  </Dropdown.Trigger>
-                  <Dropdown.Menu className="absolute right-0 z-[100] mt-2 w-28 overflow-hidden">
-                    <Dropdown.Item
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (isPending) return;
-                        onEditClick(displayTask);
-                      }}
-                      className="px-3 py-2"
-                    >
-                      수정하기
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (isPending) return;
-                        onDeleteClick(displayTask);
-                      }}
-                      className="px-3 py-2"
-                    >
-                      삭제하기
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+                <KebabMenu
+                  onEdit={() => onEditClick(displayTask)}
+                  onDelete={() => onDeleteClick(displayTask)}
+                  disabled={isPending}
+                  isDeleteDanger
+                  align="right"
+                />
               </div>
             </div>
 

@@ -7,8 +7,12 @@ type Params = {
   groupId: number;
 };
 
-export function useTeamDashboardInviteActions({ groupId }: Params) {
-  const { isOpen: isInviteModalOpen, open: openInviteModal, close: closeInviteModal } = useModal(false);
+export function useGroupInviteActions({ groupId }: Params) {
+  const {
+    isOpen: isInviteModalOpen,
+    open: openInviteModal,
+    close: closeInviteModal,
+  } = useModal(false);
   const { copyText } = useCopyToClipboard();
 
   const [isCopyingInviteLink, setIsCopyingInviteLink] = useState(false);
@@ -38,4 +42,3 @@ export function useTeamDashboardInviteActions({ groupId }: Params) {
     handleCopyInviteLink,
   };
 }
-

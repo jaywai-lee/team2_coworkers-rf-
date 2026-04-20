@@ -1,3 +1,4 @@
+import { Button } from '@/shared/ui/Button/Button';
 import { Modal } from '@/shared/ui/modal';
 
 type Props = {
@@ -32,17 +33,17 @@ export function EditTaskGroupModal({
               value={editedTitle}
               onChange={(event) => onEditedTitleChange(event.target.value)}
               placeholder="목록 명을 입력해주세요."
-              className="h-12 w-full rounded-xl border border-background-tertiary px-4 text-sm outline-none focus:border-brand-primary"
+              className="border-background-tertiary focus:border-brand-primary h-12 w-full rounded-xl border px-4 text-sm outline-none"
               autoFocus
             />
           </Modal.Body>
           <Modal.Footer className="pt-2">
-            <button
+            <Button
               type="submit"
-              className="h-12 w-full rounded-xl bg-brand-primary px-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              className="bg-brand-primary h-12 w-full rounded-xl px-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               저장하기
-            </button>
+            </Button>
           </Modal.Footer>
         </form>
       </Modal.Content>

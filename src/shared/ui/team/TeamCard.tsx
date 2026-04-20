@@ -101,8 +101,7 @@ export function TeamCard({
     onInvite?.();
   }, [onModalClose, onInvite]);
 
-  const displayMemberCount =
-    typeof memberCount === 'number' ? memberCount : sortedMembers.length;
+  const displayMemberCount = typeof memberCount === 'number' ? memberCount : sortedMembers.length;
   /** 모바일·태블릿: 인원 3 이하이면 그만큼만, 4명 이상이면 최대 3명까지 */
   const visibleFaceCount = Math.min(3, displayMemberCount, sortedMembers.length);
   const visibleMembers = sortedMembers.slice(0, visibleFaceCount);
@@ -123,26 +122,23 @@ export function TeamCard({
   return (
     <article
       className={cn(
-        'relative box-border flex h-[196px] w-full max-w-full flex-col rounded-[20px] border border-background-tertiary/60 bg-background-primary p-5 shadow-[0_4px_24px_rgba(15,23,42,0.06)]',
+        'border-background-tertiary/60 bg-background-primary relative box-border flex h-[196px] w-full max-w-full flex-col rounded-[20px] border p-5 shadow-[0_4px_24px_rgba(15,23,42,0.06)]',
         'md:h-[239px] lg:h-[239px] lg:w-[1120px] lg:max-w-[1120px] lg:shrink-0',
         className,
       )}
     >
       <header className="flex shrink-0 items-end gap-3">
-        <h3 className="text-center text-[20px] font-bold leading-[24px] text-txt-tertiary">{teamName}</h3>
+        <h3 className="text-txt-tertiary text-center text-2xl font-bold">{teamName}</h3>
         {showMemberSummary && (
           <button
             type="button"
             onClick={onMoreClick}
             aria-label="전체 멤버 보기"
-            className="inline-flex h-7 items-center rounded-[8px] border border-[var(--Border-Primary,#E2E8F0)] px-1 md:translate-y-[8px] md:h-[40px] md:rounded-[12px] md:px-[10px] lg:translate-y-0 lg:hidden"
+            className="inline-flex h-7 items-center rounded-[8px] border border-[var(--Border-Primary,#E2E8F0)] px-1 md:h-[40px] md:translate-y-[8px] md:rounded-[12px] md:px-[10px] lg:hidden lg:translate-y-0"
           >
             <div className="flex items-center">
               {visibleMembers.map((member, idx) => (
-                <span
-                  key={member.id}
-                  className={cn('inline-flex', idx > 0 && '-ml-px md:-ml-1')}
-                >
+                <span key={member.id} className={cn('inline-flex', idx > 0 && '-ml-px md:-ml-1')}>
                   <Profile
                     size="xs"
                     imageSrc={member.imageSrc}
@@ -160,7 +156,7 @@ export function TeamCard({
                 </span>
               ))}
             </div>
-            <span className="ml-1.5 text-sm font-medium leading-none text-txt-default tabular-nums md:ml-2 md:text-lg">
+            <span className="text-txt-default ml-1.5 text-sm leading-none font-medium tabular-nums md:ml-2 md:text-lg">
               {displayMemberCount}
             </span>
           </button>
@@ -182,7 +178,7 @@ export function TeamCard({
             <Dropdown>
               <Dropdown.Trigger
                 aria-label="팀 메뉴"
-                className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-transparent p-0 text-icon-primary transition-colors hover:bg-background-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2"
+                className="text-icon-primary hover:bg-background-secondary focus-visible:ring-brand-primary inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-transparent p-0 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
               >
                 <IconGear size={ICON_SIZE.md} />
               </Dropdown.Trigger>

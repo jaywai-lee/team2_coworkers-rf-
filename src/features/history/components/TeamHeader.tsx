@@ -40,7 +40,7 @@ export function TeamHeader({
         <button
           onClick={onResetCategory}
           className={cn(
-            'cursor-pointer truncate text-[16px] font-bold transition-all duration-200 md:text-[20px]',
+            'cursor-pointer truncate text-[16px] font-bold transition-all duration-200 md:text-2xl',
           )}
         >
           마이 히스토리

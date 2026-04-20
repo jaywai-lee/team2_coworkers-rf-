@@ -31,6 +31,8 @@ export default function ArticleContent({ article }: Props) {
           <KebabMenu
             onEdit={() => router.push(`/boards/${article.id}/editArticle`)}
             onDelete={() => setIsDeleteOpen(true)}
+            isDeleteDanger
+            align="side-right"
           />
         )}
       </div>

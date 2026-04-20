@@ -16,7 +16,7 @@ export function TaskListItem({ list, isActive, onSelect, onEdit, onDelete }: Pro
       className={`border-background-tertiary flex cursor-pointer items-center justify-between gap-3 rounded-[20px] border px-4 py-3 ${isActive ? 'border-brand-primary bg-blue-50' : 'bg-white'}`}
       onClick={onSelect}
     >
-      <span className="min-w-0 flex-1 truncate text-md font-semibold text-txt-primary">
+      <span className="text-md text-txt-primary min-w-0 flex-1 truncate font-semibold">
         {list.title}
       </span>
       <div className="flex shrink-0 flex-row items-center gap-2">

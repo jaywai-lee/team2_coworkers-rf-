@@ -15,7 +15,7 @@ import { flattenTaskBoardTaskListIds } from '@/features/task-board/lib/flattenTa
 import type { TaskListOrderPersistPayload } from '@/features/task-board/lib/useTaskBoardDnd';
 import type { TaskBoardColumnStatus } from '@/features/task-board/model/taskBoard.types';
 import type { Result } from '@/shared/types/result';
-import { invalidateTeamTaskQueries, toNumberId, toNumberIds } from './taskListActionHelpers';
+import { invalidateTeamTaskQueries, toNumberId, toNumberIds } from '../lib/taskListActionHelpers';
 
 type Params = {
   groupId: number;
@@ -24,7 +24,10 @@ type Params = {
   onTaskListCreatedInColumn?: (taskListIdStr: string, status: TaskBoardColumnStatus) => void;
 };
 
-function applyOrderedTaskListIdsToGroupDetail(prev: GroupDetail, orderedIds: string[]): GroupDetail | null {
+function applyOrderedTaskListIdsToGroupDetail(
+  prev: GroupDetail,
+  orderedIds: string[],
+): GroupDetail | null {
   if (orderedIds.length === 0) return null;
   const mapById = new Map(prev.taskLists.map((tl) => [String(tl.id), tl]));
   const seen = new Set<string>();
@@ -41,7 +44,7 @@ function applyOrderedTaskListIdsToGroupDetail(prev: GroupDetail, orderedIds: str
   return { ...prev, taskLists: [...nextLists, ...orphans] };
 }
 
-export function useTeamDashboardTaskListActions({
+export function useTeamDashboardActions({
   groupId,
   onTaskListBecameFullyCompleted,
   onTaskListCreatedInColumn,
@@ -73,7 +76,10 @@ export function useTeamDashboardTaskListActions({
       const taskListIdNum = toNumberId(movedTaskListId);
       if (taskListIdNum === null) return;
 
-      const result = await updateTaskListOrder({ groupId, taskListId: taskListIdNum }, { displayIndex });
+      const result = await updateTaskListOrder(
+        { groupId, taskListId: taskListIdNum },
+        { displayIndex },
+      );
       if (!result.ok) {
         toast.error(result.error.message);
         await queryClient.invalidateQueries({ queryKey: detailQueryKey });
