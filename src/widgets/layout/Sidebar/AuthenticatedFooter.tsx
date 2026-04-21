@@ -59,8 +59,8 @@ export function AuthenticatedFooter({ isExpanded }: AuthenticatedFooterProps) {
         </Dropdown.Trigger>
 
         <SidebarDropdownMenu
-          align="left"
-          className="border-background-tertiary bottom-full z-[100] mb-2 w-21.5 min-w-0 overflow-hidden rounded-xl py-0"
+          align="top-left"
+          className="border-background-tertiary z-[100] mb-2 w-21.5 min-w-0 overflow-hidden rounded-xl py-0"
         >
           <SidebarDropdownItem
             href="/mypage"

@@ -1,6 +1,6 @@
 import { ArticleCard } from '@/features/boards/components/ArticleCard';
 import { Article } from '@/features/boards/model/entities/article.model';
-import ArticleListSkeleton from './ArticleListSkeleton';
+import { ArticleListSkeletonItems } from './ArticleListSkeleton'; // 💡 알맹이 가져오기
 
 type Props = {
   articles: Article[];
@@ -13,7 +13,7 @@ export function ArticleList({ articles, isFetchingNextPage }: Props) {
       {articles.map((article) => (
         <ArticleCard key={article.id} article={article} variant="default" />
       ))}
-      {isFetchingNextPage && <ArticleListSkeleton />}
+      {isFetchingNextPage && <ArticleListSkeletonItems count={2} />}
     </div>
   );
 }
