@@ -1,11 +1,8 @@
-type DebouncedFn<T extends (...args: unknown[]) => void> = ((...args: Parameters<T>) => void) & {
+type DebouncedFn<T extends (...args: any[]) => void> = ((...args: Parameters<T>) => void) & {
   cancel: () => void;
 };
 
-export function debounce<T extends (...args: unknown[]) => void>(
-  fn: T,
-  delay: number,
-): DebouncedFn<T> {
+export function debounce<T extends (...args: any[]) => void>(fn: T, delay: number): DebouncedFn<T> {
   let timer: ReturnType<typeof setTimeout>;
 
   const debounced = (...args: Parameters<T>) => {
