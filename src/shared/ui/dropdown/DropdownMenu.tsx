@@ -4,13 +4,21 @@ import { createPortal } from 'react-dom';
 import { cn } from '@/shared/lib/cn';
 import { useDropdown } from './Dropdown';
 
-export type DropdownMenuAlign = 'left' | 'right' | 'side-left' | 'side-right';
+export type DropdownMenuAlign =
+  | 'left'
+  | 'right'
+  | 'side-left'
+  | 'side-right'
+  | 'top-left'
+  | 'top-right';
 
 const alignStyles: Record<DropdownMenuAlign, string> = {
   left: 'left-0 top-full',
   right: 'right-0 top-full',
   'side-left': 'right-full top-0',
   'side-right': 'left-full top-0',
+  'top-left': 'left-0 bottom-full',
+  'top-right': 'right-0 bottom-full',
 };
 
 interface Props extends Omit<HTMLAttributes<HTMLDivElement>, 'align'> {
@@ -70,6 +78,23 @@ export default function DropdownMenu({ children, className, align = 'right', ...
           zIndex: 100,
         });
         break;
+      case 'top-left':
+        setFixedStyle({
+          position: 'fixed',
+          bottom: window.innerHeight - r.top + MENU_GAP_PX,
+          left: r.left,
+          zIndex: 100,
+        });
+        break;
+      case 'top-right':
+        setFixedStyle({
+          position: 'fixed',
+          bottom: window.innerHeight - r.top + MENU_GAP_PX,
+          left: r.right,
+          transform: 'translateX(-100%)',
+          zIndex: 100,
+        });
+        break;
     }
   }, [align, triggerRef]);
 
@@ -105,7 +130,9 @@ export default function DropdownMenu({ children, className, align = 'right', ...
     ? align === 'side-left'
       ? 'mr-2'
       : 'ml-2'
-    : 'mt-2';
+    : align.startsWith('top-')
+      ? 'mb-2'
+      : 'mt-2';
 
   const menu = (
     <div

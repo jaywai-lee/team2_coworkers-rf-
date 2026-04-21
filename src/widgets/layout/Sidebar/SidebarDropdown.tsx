@@ -1,26 +1,24 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { cn } from '@/shared/lib/cn';
-import Dropdown from '@/shared/ui/dropdown';
+import Dropdown, { DropdownMenuAlign } from '@/shared/ui/dropdown';
 
 /** 사이드바 스타일이 적용된 드롭다운 메뉴. <Dropdown> 안에서 Dropdown.Menu 대신 사용 */
 export function SidebarDropdownMenu({
   children,
   className,
-  align = 'left',
+  align = 'top-right',
   ...props
 }: {
   children: React.ReactNode;
   className?: string;
-  align?: 'left' | 'right';
+  align?: DropdownMenuAlign;
 }) {
-  const alignClass = align === 'right' ? 'right-0' : 'left-0';
   return (
     <Dropdown.Menu
       align={align}
       className={cn(
         'bg-background-primary border-border-primary z-[9999] min-w-[200px] rounded-lg border py-2 shadow-md',
-        alignClass,
         className,
       )}
       {...props}
