@@ -6,6 +6,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { ReactElement } from 'react';
 import { toast } from 'sonner';
+import { isApiError } from '@/shared/api/mapApiError';
 
 export default function TeamCreatePage() {
   const router = useRouter();
@@ -32,9 +33,14 @@ export default function TeamCreatePage() {
               });
               toast.success('팀이 생성되었습니다.');
               await router.push(teamDashboardPath(String(created.id)));
-            } catch (e) {
-              const err = e as { message?: string };
-              toast.error(err?.message ?? '팀 생성에 실패했습니다.');
+            } catch (error: unknown) {
+              const errorMessage = isApiError(error)
+                ? error.message
+                : error instanceof Error
+                  ? error.message
+                  : '팀 생성에 실패했습니다.';
+
+              toast.error(errorMessage);
             }
           }}
         />

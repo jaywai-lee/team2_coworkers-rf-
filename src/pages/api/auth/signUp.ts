@@ -1,3 +1,4 @@
+import { isApiError } from '@/shared/api/mapApiError';
 import {
   ACCESS_TOKEN_MAX_AGE,
   COOKIE_OPTIONS,
@@ -30,9 +31,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     return res.status(200).json({ user });
   } catch (error: unknown) {
-    const apiError = error as ApiError;
-    return res
-      .status(apiError.status || 500)
-      .json({ message: apiError.message || '요청 처리 중 서버 오류가 발생했습니다.' });
+    if (isApiError(error)) {
+      return res
+        .status(error.status || 500)
+        .json({ message: error.message || '요청 처리 중 서버 오류가 발생했습니다.' });
+    }
   }
 }
