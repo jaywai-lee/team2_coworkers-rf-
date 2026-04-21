@@ -2,7 +2,7 @@ import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@ta
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import axios from 'axios';
 import { useState } from 'react';
-import { mapApiError } from '../api/mapApiError';
+import { isApiError, mapApiError } from '../api/mapApiError';
 import { EMPTY_TASK_COMMENT_CONTENT } from '../constants/mutationErrors';
 import { toast } from 'sonner';
 
@@ -31,10 +31,13 @@ export default function QueryProvider({ children }: { children: React.ReactNode 
         defaultOptions: {
           queries: {
             staleTime: 60 * 1000,
-            retry: (failureCount, error) => {
+            retry: (failureCount, error: unknown) => {
               if (axios.isAxiosError(error)) {
                 const status = error.response?.status;
                 if (status === 401 || status === 403) return false;
+              }
+              if (isApiError(error)) {
+                if (error.status === 401 || error.status === 403) return false;
               }
               return failureCount < 3;
             },
