@@ -20,6 +20,7 @@
     "cookie": "^1.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.38.0",
+    "groq-sdk": "^1.1.2",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-day-picker": "^9.14.0",
