@@ -15,7 +15,7 @@ export default function TaskCreateButton({ params }: Props) {
       <Button
         onClick={() => setIsOpen(true)}
         variant="primary"
-        className="w-full rounded-lg px-4 py-2.5 text-sm md:w-auto md:py-2"
+        className="w-full rounded-lg px-4 py-2.5 text-sm"
       >
         할 일 생성
       </Button>

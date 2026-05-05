@@ -7,12 +7,15 @@ import TaskDeleteModal from './delete-task/TaskDeleteModal';
 import TaskUpdateModalContent from './update-task/TaskUpdateModalContent';
 import { useTaskModal } from '../hooks/useTaskModal';
 import { TasksSectionLoadingSkeleton } from '@/features/task/ui/TaskPageLayoutSkeleton';
+import { useState } from 'react';
+import AiTaskInput from './create-task/AiTaskInput';
 
 type Props = TaskCommonParams & {
   date?: Date;
 };
 
 export default function TasksSection({ groupId, taskListId, date }: Props) {
+  const [isAiMode, setIsAiMode] = useState(false);
   const { data, isLoading, isError } = useTaskListQuery(
     { groupId, taskListId },
     { date: date?.toISOString() },
@@ -43,7 +46,26 @@ export default function TasksSection({ groupId, taskListId, date }: Props) {
         </h2>
 
         <ul className="flex w-full flex-col gap-2 md:gap-2.5">
-          <TaskCreateButton params={params} />
+          {!isAiMode ? (
+            <div className="flex w-full gap-2 md:gap-3">
+              <div className="flex-1">
+                <TaskCreateButton params={params} />
+              </div>
+              <button
+                onClick={() => setIsAiMode(true)}
+                className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-indigo-200 bg-indigo-50 px-4 py-2.5 text-sm font-semibold text-indigo-600 transition-colors hover:bg-indigo-100"
+              >
+                ✨ AI 간편 생성
+              </button>
+            </div>
+          ) : (
+            // AI 버튼 클릭 시 나타나는 입력창 컴포넌트
+            <AiTaskInput
+              params={params}
+              onCancel={() => setIsAiMode(false)}
+              currentDate={date?.toISOString()}
+            />
+          )}
           {!data || data.tasks.length === 0 ? (
             <li className="border-background-tertiary flex w-full flex-col items-center justify-center gap-2 rounded-lg border border-dashed py-8 md:gap-3 md:py-10">
               <p className="text-txt-default text-center text-sm">
