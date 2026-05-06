@@ -11,26 +11,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { userInput, realToday, selectedDate } = req.body;
+    const { userInput, realToday, selectedDate, calendarReference } = req.body;
 
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         {
           role: 'system',
-          // ✨ 프롬프트에 명확한 시간 계산 룰을 추가했습니다.
-          content: `당신은 일정 관리 비서입니다. 사용자의 텍스트를 분석하여 정확히 아래 JSON 형식으로만 응답하세요. 다른 부가 설명은 절대 하지 마세요.
-          
-          [시간 기준 가이드 - 매우 중요]
+          content: `당신은 일정 관리 비서입니다. 사용자의 텍스트를 분석하여 정확히 아래 JSON 형식으로만 응답하세요.
+
+          [시간 기준 가이드]
           1. 실제 현재 시간(Real Today): ${realToday}
-          - '오늘', '내일', '모레', '다음 주' 같은 상대적인 날짜 표현은 반드시 이 '실제 현재 시간'을 기준으로 계산하세요.
           2. 사용자가 보고 있는 달력 날짜(Selected Date): ${selectedDate}
-          - 사용자가 텍스트에 날짜나 요일을 아예 언급하지 않았다면 (예: "오후 3시에 미팅 잡아줘"), 이 '선택한 달력 날짜'를 기본 날짜로 사용하세요.
+            - 입력에 날짜나 요일 힌트가 '전혀' 없을 때만 이 날짜를 기본 date로 사용하세요.
+
+          [가장 가까운 미래의 요일별 날짜 매핑표 (절대 계산 금지)]
+          ${calendarReference}
+
+          [⭐반복 일정 및 요일 판단 규칙 - 매우 중요⭐]
+          1. "매일", "매주", "매월" 등의 단어가 있다면 frequencyType을 적절히 설정하세요.
+          2. frequencyType이 "WEEKLY"일 경우, weekDays 배열에 요일 숫자를 넣으세요. (0:일, 1:월, 2:화, 3:수, 4:목, 5:금, 6:토)
+          3. "매주 월요일"처럼 텍스트에 특정 요일이 포함되어 있다면, selectedDate를 무시하고 반드시 위의 [매핑표]에서 해당 요일의 날짜를 그대로 복사해서 'date'에 넣으세요.
+            - (예시) 표에 '[월요일] -> 2026-05-11' 이라고 적혀 있다면, 스스로 계산하지 말고 date 값을 "2026-05-11"로 작성하세요.
 
           [필수 반환 JSON 스키마]
           {
-            "title": "할 일의 핵심 제목 (예: 디자이너 미팅)",
-            "date": "YYYY-MM-DD (날짜를 알 수 없으면 비워두기)",
-            "time": "HH:mm (시간을 알 수 없으면 비워두기)"
+            "title": "할 일의 핵심 제목",
+            "date": "YYYY-MM-DD (알 수 없으면 비워두기)",
+            "time": "HH:mm (알 수 없으면 비워두기)",
+            "frequencyType": "ONCE | DAILY | WEEKLY | MONTHLY",
+            "weekDays": [1] (WEEKLY인 경우에만 요일 숫자 배열, 아니면 생략),
+            "monthDay": 15 (MONTHLY인 경우에만 날짜 숫자, 아니면 생략)
           }`,
         },
         {

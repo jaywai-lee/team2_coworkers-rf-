@@ -98,14 +98,15 @@ export default function WeekDateHeader({
 
   return (
     <>
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
-        <div className="min-w-0">
+      <div className="relative flex flex-col gap-3 md:flex-row md:items-center md:justify-between md:gap-4">
+        <div className="min-w-0 md:flex-1">
           <h2 className="text-txt-primary truncate text-base font-bold md:text-lg lg:text-xl">
             {groupName}
           </h2>
         </div>
-        <div className="flex min-w-0 flex-nowrap items-center gap-x-2 sm:gap-3">
-          <h2 className="text-txt-primary min-w-[6.5rem] shrink-0 text-sm font-semibold tabular-nums sm:min-w-[7.25rem] md:min-w-[8rem] md:text-base lg:min-w-[8.5rem] lg:text-lg">
+
+        <div className="flex items-center justify-between md:flex-1 md:justify-end">
+          <h2 className="text-txt-primary text-sm font-semibold tabular-nums md:absolute md:left-1/2 md:-translate-x-1/2 md:text-base lg:text-lg">
             {formatMonth(value)}
           </h2>
 
