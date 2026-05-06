@@ -1,20 +1,7 @@
-import { KeyboardEvent, useState } from 'react';
+import { useIsMobileOrTablet } from '@/shared/hooks/useIsMobileOrTablet';
+import { useAiTask } from '../../hooks/useAiTask';
 import { TaskCommonParams } from '../../model/params/task.params';
-import { toast } from 'sonner';
 import { IconClose } from '@/shared/ui/icons';
-import { useCreateTaskMutation } from '../../hooks/useCreateTaskMutation';
-import { CreateTaskParams } from '../../model/params/task.create.params';
-import axios from 'axios';
-
-interface AiTaskPreview {
-  title: string;
-  date?: string;
-  time?: string;
-  // 💡 [추후 확장 포인트] AI 프롬프트에 반복 여부를 파악하게 한 뒤 아래 필드를 추가받습니다.
-  // frequencyType?: 'ONCE' | 'DAILY' | 'WEEKLY' | 'MONTHLY';
-  // monthDay?: number;
-  // weekDays?: number[];
-}
 
 interface AiTaskInputProps {
   params: TaskCommonParams;
@@ -22,66 +9,35 @@ interface AiTaskInputProps {
   currentDate?: string;
 }
 
+const getFrequencyLabel = (freq: string) => {
+  switch (freq) {
+    case 'DAILY':
+      return '매일';
+    case 'WEEKLY':
+      return '매주';
+    case 'MONTHLY':
+      return '매월';
+    default:
+      return null;
+  }
+};
+
 export default function AiTaskInput({ params, onCancel, currentDate }: AiTaskInputProps) {
-  const [inputText, setInputText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [previewData, setPreviewData] = useState<AiTaskPreview | null>(null);
+  const {
+    inputText,
+    setInputText,
+    isLoading,
+    previewData,
+    isListening,
+    isSupported,
+    handleMicClick,
+    handleAiParse,
+    handleKeyDown,
+    handleConfirmCreate,
+    clearPreview,
+  } = useAiTask({ params, currentDate, onSuccess: onCancel });
 
-  const { mutateAsync: createTask } = useCreateTaskMutation({ ...params, date: currentDate });
-
-  const handleAiParse = async () => {
-    if (!inputText.trim()) return;
-    setIsLoading(true);
-
-    try {
-      const realToday = new Date().toISOString();
-
-      const response = await axios.post('/api/task-ai', {
-        userInput: inputText,
-        realToday: realToday,
-        selectedDate: currentDate,
-      });
-
-      setPreviewData(response.data);
-    } catch (error) {
-      toast.error('일정을 분석하는 데 실패했습니다. 다시 시도해주세요');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
-      handleAiParse();
-    }
-  };
-
-  const handleConfirmCreate = async () => {
-    if (!previewData) return;
-
-    try {
-      let startDate: Date | undefined;
-
-      if (previewData.date) {
-        const dateTimeStr = previewData.time
-          ? `${previewData.date}T${previewData.time}:00`
-          : `${previewData.date}T00:00:00`;
-        startDate = new Date(dateTimeStr);
-      }
-
-      const payload: CreateTaskParams = {
-        name: previewData.title,
-        frequencyType: 'ONCE',
-        startDate,
-      };
-
-      await createTask(payload);
-
-      onCancel();
-    } catch (error) {
-      toast.error('할 일을 생성하는 중 문제가 발생했습니다.');
-    }
-  };
+  const isMobileOrTablet = useIsMobileOrTablet();
 
   return (
     <div className="flex w-full flex-col gap-3 rounded-lg border border-indigo-200 bg-indigo-50/50 p-4 shadow-sm transition-all">
@@ -100,16 +56,57 @@ export default function AiTaskInput({ params, onCancel, currentDate }: AiTaskInp
 
       {!previewData && (
         <div className="flex gap-2">
-          <input
-            type="text"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="예: 내일 오전 11시에 디자이너 미팅 추가해줘"
-            disabled={isLoading}
-            className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none disabled:bg-gray-100 disabled:text-gray-400"
-            autoFocus
-          />
+          <div className="relative flex-1">
+            <input
+              type="text"
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={
+                isListening
+                  ? '듣고 있습니다... 말씀해 주세요!'
+                  : isMobileOrTablet
+                    ? '예: 내일 오전 11시 미팅'
+                    : '예: 내일 오전 11시에 디자이너 미팅 추가해줘'
+              }
+              disabled={isLoading || isListening}
+              className={`w-full rounded-md border py-2 pr-12 pl-3 text-sm transition-colors focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none disabled:text-gray-400 ${
+                isListening
+                  ? 'border-indigo-500 bg-indigo-50 shadow-inner'
+                  : 'border-gray-300 disabled:bg-gray-100'
+              }`}
+              autoFocus
+            />
+
+            {isSupported && (
+              <button
+                type="button"
+                onClick={handleMicClick}
+                disabled={isLoading}
+                title="음성으로 입력하기"
+                className={`absolute top-1/2 right-2 -translate-y-1/2 rounded-full p-1.5 transition-all ${
+                  isListening
+                    ? 'animate-pulse bg-red-100 text-red-600'
+                    : 'text-gray-400 hover:bg-gray-100 hover:text-indigo-600'
+                }`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="h-5 w-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z"
+                  />
+                </svg>
+              </button>
+            )}
+          </div>
           <button
             type="button"
             onClick={handleAiParse}
@@ -131,7 +128,14 @@ export default function AiTaskInput({ params, onCancel, currentDate }: AiTaskInp
         <div className="flex flex-col gap-3 rounded-md border border-white bg-white p-4 shadow-sm">
           <div className="text-sm">
             <p className="mb-1 text-gray-500">이렇게 추가할까요?</p>
-            <div className="text-base font-medium text-gray-800">{previewData.title}</div>
+            <div className="flex items-center gap-2 text-base font-medium text-gray-800">
+              {previewData.title}
+              {previewData.frequencyType !== 'ONCE' && (
+                <span className="rounded bg-indigo-100 px-1.5 py-0.5 text-xs font-semibold text-indigo-700">
+                  {getFrequencyLabel(previewData.frequencyType)}
+                </span>
+              )}
+            </div>
             {(previewData.date || previewData.time) && (
               <div className="mt-1.5 flex items-center gap-1.5 text-sm text-gray-600">
                 {previewData.date && <span>📅 {previewData.date}</span>}
@@ -143,7 +147,7 @@ export default function AiTaskInput({ params, onCancel, currentDate }: AiTaskInp
           <div className="mt-2 flex justify-end gap-2">
             <button
               type="button"
-              onClick={() => setPreviewData(null)}
+              onClick={clearPreview}
               className="rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-50"
             >
               수정/다시 입력

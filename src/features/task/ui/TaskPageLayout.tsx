@@ -109,7 +109,7 @@ export function TaskPageLayout({ groupId, taskList }: Props) {
 
   return (
     <div className="bg-background-secondary min-h-screen w-full">
-      <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-3 py-4 md:gap-5 md:py-15 lg:max-w-[1120px] lg:gap-6 lg:py-[120px]">
+      <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-3 px-5 py-4 md:gap-5 md:px-10 md:py-15 lg:max-w-[1120px] lg:gap-6 lg:py-[120px]">
         <Header />
         <div className="flex w-full flex-col gap-4 md:gap-5 lg:flex-row lg:gap-8">
           {showTaskListSkeleton ? (
