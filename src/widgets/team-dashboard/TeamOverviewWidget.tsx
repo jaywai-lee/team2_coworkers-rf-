@@ -6,6 +6,7 @@ import { TeamCard } from '@/shared/ui/team/TeamCard';
 import { TeamDashboardDeleteTeamModal } from './TeamDashboardDeleteTeamModal';
 import { TeamDashboardLeaveTeamModal } from './TeamDashboardLeaveTeamModal';
 import { UserProfile } from '@/features/user';
+import { useRouter } from 'next/router';
 
 interface TeamOverviewWidgetProps {
   group: GroupDetail;
@@ -28,6 +29,8 @@ export function TeamOverviewWidget({
   const completedTaskCount = groupTasks.filter((task) => task.isCompleted).length;
   const progressPercent =
     todayTaskCount > 0 ? Math.round((100 * completedTaskCount) / todayTaskCount) : 0;
+  const router = useRouter();
+  const currentGroupId = group.id;
 
   const {
     deleteModal,
@@ -57,6 +60,7 @@ export function TeamOverviewWidget({
         teamMenuMode={canManageMembers ? 'admin' : 'member'}
         onEditTeam={handleEditTeam}
         onDeleteTeam={handleOpenDeleteTeam}
+        onAdminPage={() => router.push(`/${currentGroupId}/admin`)}
         onLeaveTeam={handleOpenLeaveTeam}
         onInvite={openInviteModal}
         canManageMembers={canManageMembers}
