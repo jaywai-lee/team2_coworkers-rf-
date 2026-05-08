@@ -5,7 +5,6 @@ import type { GetTaskListQuery } from '../model/dto/task.query';
 import type { TaskCommonParams } from '../model/params/task.params';
 import { clientFetcher } from '@/shared/lib/axios/client-fetcher';
 
-// TODO: API 에러 핸들링 필요
 export async function getTaskList(
   path: TaskCommonParams,
   query?: GetTaskListQuery,

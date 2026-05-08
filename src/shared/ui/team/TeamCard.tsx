@@ -17,6 +17,7 @@ import {
   TEAM_CARD_DROPDOWN_PANEL_CLASS_MEMBER,
   TEAM_CARD_MENU_ITEM_CLASS,
 } from './teamCard.constants';
+import { useRouter } from 'next/router';
 
 /** `memberImages` 미전달 시 기본값. 매 렌더 `[]`를 쓰면 참조가 매번 바뀌어 `useMemo`가 불필요하게 무효화됨 */
 const EMPTY_MEMBER_IMAGES: Array<ImageAsset | undefined> = [];
@@ -33,6 +34,7 @@ export type TeamCardProps = {
   teamMenuMode?: TeamCardTeamMenuMode;
   onEditTeam?: () => void;
   onDeleteTeam?: () => void;
+  onAdminPage?: () => void;
   /** `teamMenuMode === 'member'`일 때 */
   onLeaveTeam?: () => void;
   /** `members`가 없을 때만 사용하는 폴백 이미지 목록(최대 3명 분량 권장). 없으면 플레이스홀더 */
@@ -58,6 +60,7 @@ export function TeamCard({
   teamMenuMode = 'admin',
   onEditTeam,
   onDeleteTeam,
+  onAdminPage,
   onLeaveTeam,
   memberImages = EMPTY_MEMBER_IMAGES,
   members,
@@ -206,6 +209,14 @@ export function TeamCard({
                       onClick={() => onDeleteTeam?.()}
                     >
                       삭제하기
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      align="center"
+                      type="button"
+                      className={TEAM_CARD_MENU_ITEM_CLASS}
+                      onClick={() => onAdminPage?.()}
+                    >
+                      관리자 페이지
                     </Dropdown.Item>
                   </>
                 ) : (
