@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef } from 'react';
+import { memo, useCallback, useLayoutEffect, useRef } from 'react';
 import type { UniqueIdentifier } from '@dnd-kit/core';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -27,13 +27,13 @@ function DropIndicatorLine({ edge }: { edge: 'top' | 'bottom' }) {
   );
 }
 
-export function TaskSortableCardItem({
+const TaskSortableCardItemComponent = ({
   taskGroup,
   columnStatus,
   activeTaskGroupId,
   dropIndicatorId,
   suppressDropIndicatorBefore = false,
-}: TaskSortableCardItemProps) {
+}: TaskSortableCardItemProps) => {
   const id: UniqueIdentifier = taskGroup.id;
   const {
     attributes,
@@ -96,4 +96,6 @@ export function TaskSortableCardItem({
       {showDropIndicatorAfter && <DropIndicatorLine edge="bottom" />}
     </div>
   );
-}
+};
+
+export const TaskSortableCardItem = memo(TaskSortableCardItemComponent);

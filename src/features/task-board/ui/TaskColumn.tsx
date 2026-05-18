@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 import type { TaskBoardColumnStatus, TaskBoardTaskGroup } from '../model/taskBoard.types';
@@ -10,7 +10,7 @@ import { TaskSortableCardItem } from './TaskSortableCardItem';
 export type TaskColumnProps = {
   status: TaskBoardColumnStatus;
   taskGroups: TaskBoardTaskGroup[];
-  onAddCard: () => void;
+  onAddCard: (stauts: TaskBoardColumnStatus) => void;
   activeTaskGroupId?: string | null;
   dropIndicatorId?: string | null;
 };
@@ -21,13 +21,13 @@ const getColumnDroppableId = (status: TaskBoardColumnStatus) =>
 
 const staticSortingStrategy = () => null;
 
-export function TaskColumn({
+const TaskColumnComponent = ({
   status,
   taskGroups,
   onAddCard,
   activeTaskGroupId,
   dropIndicatorId,
-}: TaskColumnProps) {
+}: TaskColumnProps) => {
   const label = TASK_BOARD_COLUMN_STATUS_LABEL[status];
   const droppableId = useMemo(() => getColumnDroppableId(status), [status]);
 
@@ -48,7 +48,7 @@ export function TaskColumn({
 
   return (
     <div className="relative flex flex-col gap-3">
-      <TaskColumnStatusHeader label={label} onAddTask={onAddCard} />
+      <TaskColumnStatusHeader label={label} onAddTask={() => onAddCard(status)} />
 
       <div
         ref={setNodeRef}
@@ -84,4 +84,6 @@ export function TaskColumn({
       </div>
     </div>
   );
-}
+};
+
+export const TaskColumn = memo(TaskColumnComponent);

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import type { useSortable } from '@dnd-kit/sortable';
 import type { TaskBoardTaskGroup } from '../model/taskBoard.types';
 import { TaskRow } from './TaskRow';
@@ -16,12 +16,12 @@ export type TaskCardProps = {
   dragListeners?: SortableDragListeners;
 };
 
-export function TaskCard({
+const TaskCardComponent = ({
   taskGroup,
   setActivatorNodeRef,
   dragAttributes,
   dragListeners,
-}: TaskCardProps) {
+}: TaskCardProps) => {
   const { onTaskToggle, onEditCard, onDeleteCard, onOpenTaskList } = useTaskBoardActionContext();
   const [collapsed, setCollapsed] = useState(false);
   const tasks = taskGroup.tasks;
@@ -76,4 +76,6 @@ export function TaskCard({
       )}
     </TaskCardShell>
   );
-}
+};
+
+export const TaskCard = memo(TaskCardComponent);
