@@ -4,7 +4,7 @@ import type { TaskBoard, TaskBoardColumn, TaskBoardColumnStatus } from '../model
 import { taskBoardCollisionDetection } from '../lib/taskBoardCollisionDetection';
 import { useTaskBoardDnd, type TaskListOrderPersistPayload } from '../lib/useTaskBoardDnd';
 import { useTaskBoardSensors } from '../lib/useTaskBoardSensors';
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { TaskColumn } from './TaskColumn';
 import { CreateTaskBoardModal } from './CreateTaskBoardModal';
 import { useTaskBoardCardActions } from '../hooks/useTaskBoardCardActions';
@@ -102,12 +102,15 @@ export function TaskBoardView({
     removeCardLocal,
   });
 
-  const actionValues = {
-    onTaskToggle: handleTaskToggle,
-    onEditCard: openEditCardModal,
-    onDeleteCard: openDeleteCardModal,
-    onOpenTaskList: onOpenTaskList,
-  };
+  const actionValues = useMemo(
+    () => ({
+      onTaskToggle: handleTaskToggle,
+      onEditCard: openEditCardModal,
+      onDeleteCard: openDeleteCardModal,
+      onOpenTaskList: onOpenTaskList,
+    }),
+    [handleTaskToggle, openEditCardModal, openDeleteCardModal, onOpenTaskList],
+  );
 
   return (
     <TaskBoardActionProvider value={actionValues}>
@@ -130,7 +133,7 @@ export function TaskBoardView({
               <TaskColumn
                 status={col.status}
                 taskGroups={col.taskGroups}
-                onAddCard={() => openCreateModal(col.status)}
+                onAddCard={openCreateModal}
                 activeTaskGroupId={activeTaskGroupId}
                 dropIndicatorId={dropIndicatorId}
               />
